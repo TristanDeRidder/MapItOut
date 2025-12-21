@@ -1,6 +1,11 @@
-import Box from "../components/Box/Box";
+import React from "react";
+import { useGLTF } from "@react-three/drei";
 
-const Continent = () => {
+
+const Continent = (props: any) => {
+  const ContinentModel = useGLTF(
+    new URL("../models/AmaralysNoMaterial.glb", import.meta.url).href
+  );
   return (
     <>
       {/* Controls */}
@@ -11,7 +16,7 @@ const Continent = () => {
       <ambientLight intensity={1} />
 
       {/* Models */}
-      <Box color="red" />
+        <primitive object={ContinentModel.scene} scale={0.02} position={[0, -1, 0]} />
     </>
   );
 };

@@ -1,5 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import Continent from "./canvasses/Continent";
+import Paper from "./components/Paper/Paper";
+import Dagger from "./components/Dagger/Dagger";
 
 const cameraSettings = {
   fov: 45,
@@ -11,6 +13,10 @@ const cameraSettings = {
 const App = () => {
   return (
     <div id="app-root">
+      <div>
+        <Paper />
+        <Dagger />
+      </div>
       <div>
         <div className="absolute top-0 left-0 bg-red-500 h-20 w-20"></div>
         <div className="absolute top-0 right-0 bg-red-500 h-20 w-20"></div>
