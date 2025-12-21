@@ -11,6 +11,12 @@ const cameraSettings = {
 const App = () => {
   return (
     <div id="app-root">
+      <div>
+        <div className="absolute top-0 left-0 bg-red-500 h-20 w-20"></div>
+        <div className="absolute top-0 right-0 bg-red-500 h-20 w-20"></div>
+        <div className="absolute bottom-0 left-0 bg-red-500 h-20 w-20"></div>
+        <div className="absolute bottom-0 right-0 bg-red-500 h-20 w-20"></div>
+      </div>
       <div id="canvas-wrap">
         <Canvas shadows camera={cameraSettings}>
           <Continent />
