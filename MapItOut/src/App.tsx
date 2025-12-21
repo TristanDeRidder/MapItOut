@@ -12,7 +12,7 @@ const cameraSettings = {
 
 const App = () => {
   return (
-    <div id="app-root">
+    <div className="w-full h-screen">
       <div>
         <Paper />
         <Dagger />
@@ -23,7 +23,7 @@ const App = () => {
         <div className="absolute bottom-0 left-0 bg-red-500 h-20 w-20"></div>
         <div className="absolute bottom-0 right-0 bg-red-500 h-20 w-20"></div>
       </div>
-      <div id="canvas-wrap">
+      <div id="canvas-wrap" className="w-screen h-screen">
         <Canvas shadows camera={cameraSettings}>
           <Continent />
         </Canvas>
@@ -33,5 +33,3 @@ const App = () => {
 };
 
 export default App;
-
-
