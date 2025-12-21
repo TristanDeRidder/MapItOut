@@ -1,0 +1,18 @@
+{
+  "locations": [
+    {
+      "id": "basgiath",
+      "name": "Basgiath",
+      "code": "BWC-01",
+      "subject": "Basgiath War College",
+      "locationDescription": "Mt. Basgiath, Central Navarre",
+      "strategicAssessment": "The beating heart of the Navarrian war machine. Carved directly into the granite cliffs, this fortress is the only institution authorized to train the Riders, Healers, Scribes, and Infantry of the King's Army.",
+      "defensiveCapabilities": [
+        "Perimeter: Fortified stone battlements and defensive turrets.",
+        "Access: Restricted to the Parapet—a lethal, narrow bridge crossing the ravine. Casualty rate for traversal averages 15–20% on Conscription Day alone.",
+        "Notable Features: The Gauntlet (Vertical obstacle course)."
+      ],
+      "status": "ACTIVE / SECURE"
+    }
+  ]
+}

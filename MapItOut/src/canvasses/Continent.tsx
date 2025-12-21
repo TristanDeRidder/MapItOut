@@ -1,15 +1,14 @@
-import React from "react";
 import { useGLTF, Html, OrbitControls } from "@react-three/drei";
 import Dagger from "../components/Dagger/Dagger";
 
 // Define your pin locations here (adjust coordinates to match your model)
 const pinLocations = [
   { position: [2, 0, 1] as [number, number, number], label: "Location 1", link: "/location1" },
-  { position: [-1, 0, 0] as [number, number, number], label: "Location 2", link: "/location2" },
+  { position: [-1, 0, 0] as [number, number, number], label: "Location 2", link: "/Basgiath" },
   { position: [0, 0, -2] as [number, number, number], label: "Location 3", link: "/location3" },
 ];
 
-const Continent = (props: any) => {
+const Continent = () => {
   const ContinentModel = useGLTF(
     new URL("../models/AmaralysNoMaterial.glb", import.meta.url).href
   );
