@@ -1,6 +1,6 @@
-import React from "react";
 import { useGLTF, Html, OrbitControls } from "@react-three/drei";
 import Dagger from "../components/Dagger/Dagger";
+import { Link, useParams } from "react-router-dom";
 
 // Define your pin locations here (adjust coordinates to match your model)
 const pinLocations = [
@@ -9,10 +9,31 @@ const pinLocations = [
   { position: [0, 0, -2] as [number, number, number], label: "Location 3", link: "/location3" },
 ];
 
-const Continent = (props: any) => {
-  const ContinentModel = useGLTF(
-    new URL("../models/AmaralysNoMaterial.glb", import.meta.url).href
-  );
+const POI = () => {
+    const { modelId } = useParams<{ modelId: string }>();
+
+    const models = {
+        "Amaralys": useGLTF(
+            new URL("../models/AmaralysNoMaterial.glb", import.meta.url).href
+        ),
+        // Add more models here as needed
+    };
+
+    const POIModel = modelId ? models[modelId as keyof typeof models] : models["Amaralys"];
+
+    if (!POIModel) {
+        return (
+            <div className="">
+                <div className="text-center">
+                    <h1 className="">Model Not Found</h1>
+                    <Link to="/" className="">
+                        ← Back to Collection
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
   return (
     <>
       {/* Controls */}
@@ -23,7 +44,7 @@ const Continent = (props: any) => {
       <ambientLight intensity={1} />
 
       {/* Models */}
-      <primitive object={ContinentModel.scene} scale={0.02} position={[0, -1, 0]} />
+      <primitive object={POIModel.scene} scale={0.02} position={[0, -1, 0]} />
 
       {/* Pinned Daggers */}
       {pinLocations.map((pin, index) => (
@@ -39,4 +60,4 @@ const Continent = (props: any) => {
   );
 };
 
-export default Continent;
+export default POI;

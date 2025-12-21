@@ -1,10 +1,10 @@
 import { Canvas } from "@react-three/fiber";
-import Continent from "./canvasses/Continent";
-import Paper from "./components/Paper/Paper";
-import Dagger from "./components/Dagger/Dagger";
+import Continent from "../canvasses/Continent";
+import Paper from "../components/Paper/Paper";
+import Dagger from "../components/Dagger/Dagger";
 
 const cameraSettings = {
-  fov: 45,
+  fov: 60,
   near: 0.1,
   far: 200,
   position: [0, 6, 12] as [number, number, number],
