@@ -10,7 +10,7 @@ const Continent = () => {
   const [targetLocation, setTargetLocation] = useState<[number, number, number]>([0, 0, 0]);
 
   const ContinentModel = useGLTF(
-    new URL("../models/AmaralysNoMaterial.glb", import.meta.url).href
+    new URL("../models/AmaralysBaked2.glb", import.meta.url).href
   );
   return (
     <>
