@@ -1,4 +1,4 @@
-import { useGLTF, OrbitControls, Clone, Sky, Html, Text, PerspectiveCamera } from "@react-three/drei";
+import { useGLTF, OrbitControls, Clone, Sky, Text, PerspectiveCamera } from "@react-three/drei";
 import pinsData from "../data/pins.json";
 import CameraArcAnimation from "../components/Camera/ArcCamera";
 import { useState, useRef, useMemo } from "react";
@@ -6,7 +6,6 @@ import * as THREE from "three";
 import gsap from 'gsap';
 import { Water } from 'three-stdlib';
 import { extend, useThree, useFrame, useLoader } from '@react-three/fiber';
-import Circle from "../components/Pins/Circle";
 
 extend({ Water });
 
