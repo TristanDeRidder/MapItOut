@@ -1,4 +1,4 @@
-import Dagger from "../Dagger/Dagger";
+import Dagger from "../Pins/Dagger";
 
 interface LocationCardProps {
     name: string;

@@ -1,7 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import Continent from "../canvasses/Continent";
 import Paper from "../components/Paper/Paper";
-import Dagger from "../components/Dagger/Dagger";
+import Dagger from "../components/Pins/Dagger";
 
 const cameraSettings = {
   fov: 60,

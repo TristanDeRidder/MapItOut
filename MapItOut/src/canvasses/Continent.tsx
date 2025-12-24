@@ -1,4 +1,4 @@
-import { useGLTF, OrbitControls, Clone, Sky } from "@react-three/drei";
+import { useGLTF, OrbitControls, Clone, Sky, Html, Text, PerspectiveCamera } from "@react-three/drei";
 import pinsData from "../data/pins.json";
 import CameraArcAnimation from "../components/Camera/ArcCamera";
 import { useState, useRef, useMemo } from "react";
@@ -6,6 +6,7 @@ import * as THREE from "three";
 import gsap from 'gsap';
 import { Water } from 'three-stdlib';
 import { extend, useThree, useFrame, useLoader } from '@react-three/fiber';
+import Circle from "../components/Pins/Circle";
 
 extend({ Water });
 
@@ -43,10 +44,10 @@ function Ocean() {
   );
   useFrame((_, delta) => {
     if (ref.current) {
-      ref.current.material.uniforms.time.value += delta * 0.3;
+      ref.current.material.uniforms.time.value += delta * 0.1;
     }
   });
-  return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} position={[0, -1.5, 0]} />;
+  return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} position={[0, -1.05, 0]} />;
 }
 
 const Continent = () => {
@@ -63,13 +64,13 @@ const Continent = () => {
   );
 
   const animateDagger = async (index: number) => {
-    await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
     const daggerGroup = daggerRefs.current[index];
     if (!daggerGroup) return;
 
     // Animate dagger moving up
     gsap.to(daggerGroup.position, {
-      y: daggerGroup.position.y + 2, // Move up by 2 units
+      y: daggerGroup.position.y + 2, // Move up
       duration: 1.5,
       ease: "power2.out",
     });
@@ -78,8 +79,11 @@ const Continent = () => {
   
   return (
     <>
+      {/* Camera - Top View */}
+      <PerspectiveCamera makeDefault position={[0, 15, 0]} rotation={[-Math.PI / 2, 0, 0]} />
+      
       {/* Controls */}
-      <OrbitControls makeDefault />
+      <OrbitControls makeDefault enableZoom={false} enableRotate={false} />
 
       <CameraArcAnimation 
         endPos={targetLocation}     // The map/dagger location
@@ -95,7 +99,7 @@ const Continent = () => {
 
       {/* World */}
       <directionalLight position={[1, 2, 3]} intensity={4.5} />
-      <ambientLight intensity={1} />
+      <ambientLight intensity={2} />
       <Ocean />
       <group scale={1000}>
         <Sky sunPosition={[500, 150, -1000]} turbidity={0.1} />
@@ -105,7 +109,7 @@ const Continent = () => {
       <primitive object={ContinentModel.scene} scale={0.02} position={[0, -1, 0]} />
 
       {/* Pinned Daggers */}
-      {pinsData.pins.map((pin, index) => {
+      {/* {pinsData.pins.map((pin, index) => {
         const minYRotation = 0; // Minimum rotation angle in radians
         const maxYRotation = Math.PI * 0.25; // Maximum rotation angle in radians
         const range = maxYRotation - minYRotation;
@@ -142,10 +146,39 @@ const Continent = () => {
               document.body.style.cursor = 'default';
             }}
           >
-            <Clone object={DaggerModel.scene} scale={0.4} />
+            <Clone object={DaggerModel.scene} scale={0.2} />
           </group>
         );
-      })}
+      })} */}
+
+{pinsData.pins.map((pin, index) => (
+  <Text
+    key={index}
+    position={pin.position as [number, number, number]}
+    rotation={[-Math.PI / 2, 0, 0]}
+    fontSize={0.35}
+    color="white"
+    anchorX="center"
+    anchorY="middle"
+    outlineWidth={0.02}
+    outlineColor="#ffffff"
+    onClick={(e) => {
+      e.stopPropagation();
+      if (!pin.link) return;
+
+      setTargetLocation(pin.position as [number, number, number]);
+      setPendingLink(pin.link);
+      setStartArc(true);
+      animateDagger(index);
+    }}
+    onPointerEnter={() => (document.body.style.cursor = 'pointer')}
+    onPointerLeave={() => (document.body.style.cursor = 'default')}
+  >
+    {pin.label}
+  </Text>
+))}
+
+
     </>
   );
 };
