@@ -2,18 +2,18 @@
   "pins": [
     {
       "position": [2, 0, 1],
-      "label": "Location 1",
-      "link": "/location1"
+      "label": "Resson",
+      "link": "/Resson"
     },
     {
       "position": [-1, 0, 0],
-      "label": "Location 2",
+      "label": "Basgiath",
       "link": "/Basgiath"
     },
     {
       "position": [0, 0, -2],
-      "label": "Location 3",
-      "link": "/location3"
+      "label": "Draithus",
+      "link": "/Draithus"
     }
   ]
 }

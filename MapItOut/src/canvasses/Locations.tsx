@@ -1,32 +1,21 @@
-import { useGLTF, OrbitControls, Html } from "@react-three/drei";
-import { useParams } from "react-router-dom";
+import { useGLTF, OrbitControls } from "@react-three/drei";
 
-const Locations = () => {
-    const { modelId } = useParams<{ modelId: string }>();
+const Locations = ({ modelId }: { modelId?: string }) => {
+    console.log("modelId:", modelId);
 
-    const models = {
-        "Basgiath": useGLTF(
-            new URL("../models/BasgiathNoMaterial.glb", import.meta.url).href
-        ),
-        // extra models can be added here
-    };
-
-    const POIModel = modelId ? models[modelId as keyof typeof models] : null;
-
-    if (!POIModel) {
-        return (
-            <Html>
-                <div className="h-screen w-screen flex justify-center items-center">
-                    <div className="text-center">
-                        <h1 className="">Model Not Found</h1>
-                        <a href="/" className="">
-                            ← Back to Map
-                        </a>
-                    </div>
-                </div>
-            </Html>
-        );
+    if (!modelId) {
+        return null;
     }
+
+    const modelName = `${modelId}Baked2`;
+
+    
+    console.log("modelName:", modelName);
+    const POIModel = useGLTF(
+        new URL(`../models/${modelName}.glb`, import.meta.url).href
+    );
+
+    console.log("POIModel:", POIModel);    
 
   return (
     <>

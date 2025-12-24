@@ -1,7 +1,7 @@
 {
-  "locations": [
-    {
-      "id": "basgiath",
+  "locations": {
+    "Basgiath":{
+      "id": "Basgiath",
       "name": "Basgiath",
       "code": "BWC-01",
       "subject": "Basgiath War College",
@@ -13,6 +13,34 @@
         "Notable Features: The Gauntlet (Vertical obstacle course)."
       ],
       "status": "ACTIVE / SECURE"
-    }
-  ]
+    },
+    "Resson":{
+      "id": "Resson",
+      "name": "Resson",
+      "code": "RMC-02",
+      "subject": "Resson Mining Complex",
+      "locationDescription": "Resson Caverns, Eastern Navarre",
+      "strategicAssessment": "A sprawling network of tunnels and caverns rich in minerals vital to Navarre's industry and military. The complex is a labyrinthine structure that extends deep underground, making it a challenging environment for both workers and potential intruders.",
+      "defensiveCapabilities": [
+        "Perimeter: Natural rock formations supplemented with guard posts at key entry points.",
+        "Access: Multiple entry points, all monitored by security personnel. The main entrance is fortified with heavy gates and surveillance systems.",
+        "Notable Features: The Echo Chamber (a natural acoustic phenomenon used for communication)."
+      ],
+      "status": "ACTIVE / SECURE"
+    },
+    "Draithus":{
+      "id": "Draithus",
+      "name": "Draithus",
+      "code": "DDC-03",
+      "subject": "Draithus Defense Complex",
+      "locationDescription": "Draithus Highlands, Northern Navarre",
+      "strategicAssessment": "A critical military installation designed to defend Navarre's northern borders. The complex is equipped with advanced weaponry and surveillance systems, making it a formidable barrier against potential invasions.",
+      "defensiveCapabilities": [
+        "Perimeter: High walls reinforced with steel and concrete, equipped with watchtowers at regular intervals.",
+        "Access: Single heavily guarded entrance with biometric security measures. Additional checkpoints are located throughout the complex.",
+        "Notable Features: The Sentinel Towers (automated defense systems)."
+      ],
+      "status": "ACTIVE / SECURE"
+}
+  }
 }
