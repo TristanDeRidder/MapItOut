@@ -1,17 +1,17 @@
 {
   "pins": [
     {
-      "position": [-0.5, 0.5, 3],
+      "position": [-1, -0.5, 4],
       "label": "Resson",
       "link": "/Resson"
     },
     {
-      "position": [-3.5, 0.5, -1.5],
+      "position": [-3.5, -0.5, -1.5],
       "label": "Basgiath",
       "link": "/Basgiath"
     },
     {
-      "position": [-0.5, 0.5, 2.75],
+      "position": [-0.5, -0.5, 2.75],
       "label": "Draithus",
       "link": "/Draithus"
     }
