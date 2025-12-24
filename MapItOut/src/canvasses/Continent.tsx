@@ -1,13 +1,15 @@
-import { useGLTF, Html, OrbitControls, Clone } from "@react-three/drei";
-import Dagger from "../components/Dagger/Dagger";
+import { useGLTF, OrbitControls, Clone } from "@react-three/drei";
 import pinsData from "../data/pins.json";
 import CameraArcAnimation from "../components/Camera/ArcCamera";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import * as THREE from "three";
+import gsap from 'gsap';
 
 const Continent = () => {
   const [startArc, setStartArc] = useState(false);
   const [pendingLink, setPendingLink] = useState<string | null>(null);
   const [targetLocation, setTargetLocation] = useState<[number, number, number]>([0, 0, 0]);
+  const daggerRefs = useRef<{ [key: number]: THREE.Group }>({});
 
   const ContinentModel = useGLTF(
     new URL("../models/AmaralysBaked2.glb", import.meta.url).href
@@ -15,6 +17,19 @@ const Continent = () => {
   const DaggerModel = useGLTF(
     new URL("../models/DaggerOrigin.glb", import.meta.url).href
   );
+
+  const animateDagger = async (index: number) => {
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
+    const daggerGroup = daggerRefs.current[index];
+    if (!daggerGroup) return;
+
+    // Animate dagger moving up
+    gsap.to(daggerGroup.position, {
+      y: daggerGroup.position.y + 2, // Move up by 2 units
+      duration: 1.5,
+      ease: "power2.out",
+    });
+  };
   return (
     <>
       {/* Controls */}
@@ -53,7 +68,10 @@ const Continent = () => {
         
         return (
           <group 
-            key={index} 
+            key={index}
+            ref={(el) => {
+              if (el) daggerRefs.current[index] = el;
+            }}
             position={pin.position as [number, number, number]}
             rotation={[Math.PI / 2, randomRotation, randomXRotation]} // Point downwards + unique Y rotation
             onClick={(e) => {
@@ -62,6 +80,7 @@ const Continent = () => {
                 setTargetLocation(pin.position as [number, number, number]);
                 setPendingLink(pin.link);
                 setStartArc(true);
+                animateDagger(index);
               }
             }}
             onPointerEnter={(e) => {
