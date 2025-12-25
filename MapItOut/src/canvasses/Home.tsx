@@ -1,6 +1,6 @@
 import { useGLTF, PerspectiveCamera } from "@react-three/drei";
 import * as THREE from "three";
-import { Clouds, Cloud, CameraControls, Sky as SkyImpl, StatsGl } from "@react-three/drei"
+import { Clouds, Cloud, CameraControls, Sky as SkyImpl } from "@react-three/drei"
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 
 
@@ -42,7 +42,6 @@ export const Home = () => {
       </EffectComposer>
 
       {/* Sky */}
-      <StatsGl />
       <SkyConfig />
       <ambientLight intensity={Math.PI / 1.5} />
       <spotLight position={[0, 40, 0]} decay={0} distance={45} penumbra={1} intensity={100} />

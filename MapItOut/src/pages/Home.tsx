@@ -17,7 +17,9 @@ const App = () => {
         </Canvas>
       </div>
       <div>
-        <div className="absolute top-0 left-0 bg-white opacity-50 backdrop-blur-3xl h-full w-full"></div>
+        <div className="flex justify-center items-center absolute top-0 left-0 bg-white opacity-50 backdrop-blur-3xl h-full w-full">
+          <p className="text-black text-5xl w-fit">Amaralys</p>
+        </div>
       </div>
     </div>
   );
