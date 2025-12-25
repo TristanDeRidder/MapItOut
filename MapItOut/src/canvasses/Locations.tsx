@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import crowdUrl from '../assets/sounds/crowd.wav';
 import FireUrl from '../assets/sounds/fire.wav';
 import LightningUrl from '../assets/sounds/lightning.wav';
+import Lightning from "../components/Lightning/Lightning";
 
 type LocationConfig = {
   sound?: {
@@ -14,7 +15,13 @@ type LocationConfig = {
     sunPosition: [number, number, number];
     turbidity?: number;
   };
+  lightning?: {
+    intensity: number;
+    interval: [number, number];
+    flashDuration: number;
+  };
 };
+
 
 const LOCATION_CONFIG: Record<string, LocationConfig> = {
   BasgiathBaked2: {
@@ -35,10 +42,15 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
       loop: true,
     },
   },
-  DraithusBaked2: {
+   DraithusBaked2: {
     sound: {
       url: LightningUrl,
       volume: 0.3,
+    },
+    lightning: {
+      intensity: 8,
+      interval: [3, 8],
+      flashDuration: 0.15,
     },
   },
 };
@@ -103,6 +115,10 @@ const Locations = ({ modelId }: { modelId?: string }) => {
           />
         </group>
       )}
+
+      {/* Lightning */}
+      {config?.lightning && <Lightning config={config.lightning} />}
+
 
       {/* Model */}
       <primitive

@@ -49,7 +49,7 @@ function Ocean() {
   return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} position={[0, -1.05, 0]} />;
 }
 
-const Continent = () => {
+export const Continent = () => {
   const [startArc, setStartArc] = useState(false);
   const [pendingLink, setPendingLink] = useState<string | null>(null);
   const [targetLocation, setTargetLocation] = useState<[number, number, number]>([0, 0, 0]);
@@ -182,7 +182,7 @@ const Continent = () => {
   );
 };
 
-const WoodContinent = () => {
+export const WoodContinent = () => {
   const [startArc, setStartArc] = useState(false);
   const [pendingLink, setPendingLink] = useState<string | null>(null);
   const [targetLocation, setTargetLocation] = useState<[number, number, number]>([0, 0, 0]);
@@ -286,5 +286,3 @@ const WoodContinent = () => {
     </>
   );
 };
-
-export default Continent;
