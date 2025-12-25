@@ -1,10 +1,10 @@
-import { useGLTF, OrbitControls, Clone, Sky, Text } from "@react-three/drei";
+import { useGLTF, OrbitControls, Clone, Sky, Text, Environment, ContactShadows } from "@react-three/drei";
 import pinsData from "../data/pins.json";
 import CameraArcAnimation from "../components/Camera/ArcCamera";
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef, useMemo, useEffect, use, useLayoutEffect } from "react";
 import * as THREE from "three";
 import gsap from 'gsap';
-import { Water } from 'three-stdlib';
+import { Water } from "three-stdlib";
 import { extend, useThree, useFrame, useLoader } from '@react-three/fiber';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 
@@ -47,7 +47,7 @@ function Ocean() {
       ref.current.material.uniforms.time.value += delta * 0.1;
     }
   });
-  return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} position={[0, -1.05, 0]} />;
+  return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} position={[0, -2, 0]} />;
 }
 
 export const Continent = () => {
@@ -63,18 +63,17 @@ export const Continent = () => {
   return (
     <>
       {/* Post-Processing Effects */}
-    <EffectComposer>
-      <Bloom
-        intensity={1.2}
-        luminanceThreshold={0.6}
-        luminanceSmoothing={0.9}
-      />
-
-    </EffectComposer>
+      <EffectComposer>
+        <Bloom
+          intensity={0.5}
+          luminanceThreshold={1.1}
+          luminanceSmoothing={0.6}
+        />
+      </EffectComposer>
       {/* Controls */}
       <OrbitControls makeDefault enableZoom={false} enableRotate={true} />
 
-      <CameraArcAnimation 
+      <CameraArcAnimation
         endPos={targetLocation}
         arcHeight={8}
         play={startArc}
@@ -87,7 +86,7 @@ export const Continent = () => {
       />
 
       {/* World */}
-      <directionalLight position={[1, 2, 3]} intensity={4.5} />
+      <directionalLight position={[-3, 2, 1]} intensity={1.8} castShadow />
       <ambientLight intensity={2} />
       <Ocean />
       <group scale={1000}>
@@ -95,41 +94,42 @@ export const Continent = () => {
       </group>
 
       {/* Models */}
-      <primitive object={ContinentModel.scene} scale={0.02} position={[0, -1, 0]} />
+      <primitive
+        object={ContinentModel.scene}
+        scale={0.02}
+        position={[0, -1, 0]}
+      />
 
       {pinsData.pins.map((pin, index) => (
         <>
-        <Text
-        key={index}
-        position={pin.position as [number, number, number]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        font="/fonts/Felipa-Regular.ttf"
-        fontSize={0.35}
-        color="rgba(255, 255, 255, 1)"
-        anchorX="center"
-        anchorY="middle"
-        outlineWidth={0.05}
-        outlineColor="rgba(255, 238, 0, 1) 0, 1)"
-        outlineOpacity={0.35}
-        material-toneMapped={false}
-        onClick={(e) => {
-          e.stopPropagation();
-          if (!pin.link) return;
+          <Text
+            key={index}
+            position={pin.position as [number, number, number]}
+            rotation={[-Math.PI / 2, 0, 0]}
+            font="/fonts/Felipa-Regular.ttf"
+            fontSize={0.35}
+            color="rgba(255, 255, 255, 1)"
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.05}
+            outlineColor="rgba(255, 238, 0, 1) 0, 1)"
+            outlineOpacity={0.35}
+            material-toneMapped={false}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (!pin.link) return;
 
-          setTargetLocation(pin.position as [number, number, number]);
-          setPendingLink(pin.link);
-          setStartArc(true);
-        }}
-        onPointerEnter={() => (document.body.style.cursor = 'pointer')}
-        onPointerLeave={() => (document.body.style.cursor = 'default')}
-      >
-        {pin.label}
-      </Text>
-
-</>
+              setTargetLocation(pin.position as [number, number, number]);
+              setPendingLink(pin.link);
+              setStartArc(true);
+            }}
+            onPointerEnter={() => (document.body.style.cursor = "pointer")}
+            onPointerLeave={() => (document.body.style.cursor = "default")}
+          >
+            {pin.label}
+          </Text>
+        </>
       ))}
-
-
     </>
   );
 };
@@ -141,7 +141,7 @@ export const WoodContinent = () => {
   const daggerRefs = useRef<{ [key: number]: THREE.Group }>({});
 
   const ContinentModel = useGLTF(
-    new URL("../models/PaperAmaralys.glb", import.meta.url).href
+    new URL("../models/AmaralysBaked2.glb", import.meta.url).href
   );
   const TableModel = useGLTF(
     new URL("../models/WoodenAmaralys.glb", import.meta.url).href
@@ -163,13 +163,84 @@ export const WoodContinent = () => {
     });
   };
 
+  DaggerModel.scene.traverse((obj) => {
+    if ((obj as any).isMesh) {
+      const mat = (obj as any).material;
+      if (mat && mat.isMeshStandardMaterial) {
+        mat.envMapIntensity = 5;
+        mat.needsUpdate = true;
+      }
+    }
+  });
+
+  useLayoutEffect(() => {
+    DaggerModel.scene.traverse((obj) => {
+      if ((obj as any).isMesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = false;
+
+        const mat = (obj as any).material;
+        if (mat?.isMeshStandardMaterial) {
+          mat.envMapIntensity = 4;
+          mat.roughness = 0.25;
+          mat.metalness = 1;
+          mat.needsUpdate = true;
+        }
+      }
+    });
+  }, [DaggerModel]);
+
+
+  useLayoutEffect(() => {
+    ContinentModel.scene.traverse((obj) => {
+      if ((obj as any).isMesh) {
+        obj.castShadow = false;
+        obj.receiveShadow = true;
+
+        const mat = (obj as any).material;
+        if (mat && mat.isMeshStandardMaterial) {
+          mat.metalness = 0;
+          mat.roughness = 1;
+          mat.envMapIntensity = 1;
+          mat.needsUpdate = true;
+        }
+      }
+    });
+  }, [ContinentModel]);
+
+
+  useLayoutEffect(() => {
+    TableModel.scene.traverse((obj) => {
+      if ((obj as any).isMesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+      }
+    });
+  }, [TableModel]);
   
   return (
-    <>   
+    <>
+      {/* Post-Processing Effects */}
+      <EffectComposer>
+        <Bloom
+          intensity={0.5}
+          luminanceThreshold={1.1}
+          luminanceSmoothing={0.6}
+        />
+      </EffectComposer>
+
+      {/* <ContactShadows
+        position={[0, -1.02, 0]}
+        opacity={0.4}
+        scale={30}
+        blur={3}
+        far={10}
+      /> */}
+
       {/* Controls */}
       <OrbitControls makeDefault enableZoom={true} enableRotate={true} />
 
-      <CameraArcAnimation 
+      <CameraArcAnimation
         endPos={targetLocation}
         arcHeight={8}
         play={startArc}
@@ -182,16 +253,42 @@ export const WoodContinent = () => {
       />
 
       {/* World */}
-      <directionalLight position={[1, 2, 3]} intensity={4.5} />
-      <ambientLight intensity={2} />
+      <directionalLight
+        castShadow
+        position={[10, 15, 10]}
+        intensity={2.5}
+        shadow-mapSize={[4096, 4096]}
+        shadow-camera-left={-50}
+        shadow-camera-right={50}
+        shadow-camera-top={50}
+        shadow-camera-bottom={-50}
+        shadow-camera-near={1}
+        shadow-camera-far={120}
+      />
+
+      <ambientLight intensity={0.2} />
+      <Environment preset="city" />
       {/* <Ocean /> */}
+      <mesh
+        rotation-x={-Math.PI / 2}
+        position={[0, -0.97, 0]} // slightly BELOW the continent
+        receiveShadow
+      >
+        <planeGeometry args={[60, 60]} />
+        <shadowMaterial opacity={0.35} />
+      </mesh>
+
       <group scale={1000}>
-        <Sky sunPosition={[500, 150, -1000]} turbidity={0.1} />
+        <Sky sunPosition={[500, 150, -10]} turbidity={0.1} />
       </group>
 
       {/* Models */}
-      <primitive object={ContinentModel.scene} scale={0.02} position={[0, -1, 0]} />
-      <primitive object={TableModel.scene} scale={0.02} position={[0, -1, 0]} />
+      <primitive
+        object={ContinentModel.scene}
+        scale={0.02}
+        position={[0, -0.95, 0]}
+      />
+      {/* <primitive object={TableModel.scene} scale={0.02} position={[0, -1, 0]} /> */}
 
       {/* Pinned Daggers */}
       {pinsData.pins.map((pin, index) => {
@@ -204,9 +301,9 @@ export const WoodContinent = () => {
         const maxXRotation = Math.PI * 4;
         const xRange = maxXRotation - minXRotation;
         const randomXRotation = minXRotation + ((index * 0.5) % xRange);
-        
+
         return (
-          <group 
+          <group
             key={index}
             ref={(el) => {
               if (el) daggerRefs.current[index] = el;
@@ -224,14 +321,14 @@ export const WoodContinent = () => {
             }}
             onPointerEnter={(e) => {
               e.stopPropagation();
-              document.body.style.cursor = 'pointer';
+              document.body.style.cursor = "pointer";
             }}
             onPointerLeave={(e) => {
               e.stopPropagation();
-              document.body.style.cursor = 'default';
+              document.body.style.cursor = "default";
             }}
           >
-            <Clone object={DaggerModel.scene} scale={0.5} />
+            <Clone object={DaggerModel.scene} scale={0.3} />
           </group>
         );
       })}
