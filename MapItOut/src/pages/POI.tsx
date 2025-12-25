@@ -14,8 +14,6 @@ const cameraSettings = {
 const POI = () => {
     const { modelId } = useParams<{ modelId: string }>();
 
-    console.log("modelId from params:", modelId);
-
     // Find the location that matches the modelId from the URL params
     const locationData = Object.values(locationsData.locations).find(
         loc => loc.id === modelId
