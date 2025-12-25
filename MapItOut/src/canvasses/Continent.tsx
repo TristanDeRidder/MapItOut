@@ -6,6 +6,7 @@ import * as THREE from "three";
 import gsap from 'gsap';
 import { Water } from 'three-stdlib';
 import { extend, useThree, useFrame, useLoader } from '@react-three/fiber';
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 
 extend({ Water });
 
@@ -61,6 +62,15 @@ export const Continent = () => {
   
   return (
     <>
+      {/* Post-Processing Effects */}
+    <EffectComposer>
+      <Bloom
+        intensity={1.2}
+        luminanceThreshold={0.6}
+        luminanceSmoothing={0.9}
+      />
+
+    </EffectComposer>
       {/* Controls */}
       <OrbitControls makeDefault enableZoom={false} enableRotate={true} />
 
@@ -90,29 +100,32 @@ export const Continent = () => {
       {pinsData.pins.map((pin, index) => (
         <>
         <Text
+        key={index}
         position={pin.position as [number, number, number]}
         rotation={[-Math.PI / 2, 0, 0]}
         font="/fonts/Felipa-Regular.ttf"
         fontSize={0.35}
-        color="#ffd500ff"
-        outlineWidth={0.06}
-        outlineColor="#ffd500ff"
-        outlineOpacity={0.4}
+        color="rgba(255, 255, 255, 1)"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.05}
+        outlineColor="rgba(255, 238, 0, 1) 0, 1)"
+        outlineOpacity={0.35}
+        material-toneMapped={false}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (!pin.link) return;
+
+          setTargetLocation(pin.position as [number, number, number]);
+          setPendingLink(pin.link);
+          setStartArc(true);
+        }}
+        onPointerEnter={() => (document.body.style.cursor = 'pointer')}
+        onPointerLeave={() => (document.body.style.cursor = 'default')}
       >
         {pin.label}
       </Text>
 
-      <Text
-        position={pin.position as [number, number, number]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        font="/fonts/Felipa-Regular.ttf"
-        fontSize={0.35}
-        color="#ffffff"
-        outlineWidth={0.015}
-        outlineColor="#ffffff"
-      >
-        {pin.label}
-      </Text>
 </>
       ))}
 
