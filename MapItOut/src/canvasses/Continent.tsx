@@ -1,4 +1,4 @@
-import { useGLTF, OrbitControls, Clone, Sky, Text, PerspectiveCamera } from "@react-three/drei";
+import { useGLTF, OrbitControls, Clone, Sky, Text } from "@react-three/drei";
 import pinsData from "../data/pins.json";
 import CameraArcAnimation from "../components/Camera/ArcCamera";
 import { useState, useRef, useMemo } from "react";
@@ -53,40 +53,20 @@ export const Continent = () => {
   const [startArc, setStartArc] = useState(false);
   const [pendingLink, setPendingLink] = useState<string | null>(null);
   const [targetLocation, setTargetLocation] = useState<[number, number, number]>([0, 0, 0]);
-  const daggerRefs = useRef<{ [key: number]: THREE.Group }>({});
 
   const ContinentModel = useGLTF(
     new URL("../models/AmaralysBaked2.glb", import.meta.url).href
   );
-  const DaggerModel = useGLTF(
-    new URL("../models/DaggerOrigin.glb", import.meta.url).href
-  );
-
-  const animateDagger = async (index: number) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    const daggerGroup = daggerRefs.current[index];
-    if (!daggerGroup) return;
-
-    // Animate dagger moving up
-    gsap.to(daggerGroup.position, {
-      y: daggerGroup.position.y + 2, // Move up
-      duration: 1.5,
-      ease: "power2.out",
-    });
-  };
 
   
   return (
     <>
-      {/* Camera - Top View */}
-      {/* <PerspectiveCamera makeDefault position={[0, 15, 0]} rotation={[-Math.PI / 2, 0, 0]} /> */}
-      
       {/* Controls */}
       <OrbitControls makeDefault enableZoom={false} enableRotate={true} />
 
       <CameraArcAnimation 
-        endPos={targetLocation}     // The map/dagger location
-        arcHeight={8}          // Height of the dagger pull
+        endPos={targetLocation}
+        arcHeight={8}
         play={startArc}
         onComplete={() => {
           setStartArc(false);
@@ -107,75 +87,34 @@ export const Continent = () => {
       {/* Models */}
       <primitive object={ContinentModel.scene} scale={0.02} position={[0, -1, 0]} />
 
-      {/* Pinned Daggers */}
-      {/* {pinsData.pins.map((pin, index) => {
-        const minYRotation = 0; // Minimum rotation angle in radians
-        const maxYRotation = Math.PI * 0.25; // Maximum rotation angle in radians
-        const range = maxYRotation - minYRotation;
-        const randomRotation = minYRotation + ((index * 0.5) % range); // Different angle for each
+      {pinsData.pins.map((pin, index) => (
+        <>
+        <Text
+        position={pin.position as [number, number, number]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        font="/fonts/Felipa-Regular.ttf"
+        fontSize={0.35}
+        color="#ffd500ff"
+        outlineWidth={0.06}
+        outlineColor="#ffd500ff"
+        outlineOpacity={0.4}
+      >
+        {pin.label}
+      </Text>
 
-        const minXRotation = 0;
-        const maxXRotation = Math.PI * 4;
-        const xRange = maxXRotation - minXRotation;
-        const randomXRotation = minXRotation + ((index * 0.5) % xRange);
-        
-        return (
-          <group 
-            key={index}
-            ref={(el) => {
-              if (el) daggerRefs.current[index] = el;
-            }}
-            position={pin.position as [number, number, number]}
-            rotation={[Math.PI / 2, randomRotation, randomXRotation]} // Point downwards + unique Y rotation
-            onClick={(e) => {
-              e.stopPropagation();
-              if (pin.link) {
-                setTargetLocation(pin.position as [number, number, number]);
-                setPendingLink(pin.link);
-                setStartArc(true);
-                animateDagger(index);
-              }
-            }}
-            onPointerEnter={(e) => {
-              e.stopPropagation();
-              document.body.style.cursor = 'pointer';
-            }}
-            onPointerLeave={(e) => {
-              e.stopPropagation();
-              document.body.style.cursor = 'default';
-            }}
-          >
-            <Clone object={DaggerModel.scene} scale={0.2} />
-          </group>
-        );
-      })} */}
-
-{pinsData.pins.map((pin, index) => (
-  <Text
-    key={index}
-    position={pin.position as [number, number, number]}
-    rotation={[-Math.PI / 2, 0, 0]}
-    fontSize={0.35}
-    color="white"
-    anchorX="center"
-    anchorY="middle"
-    outlineWidth={0.02}
-    outlineColor="#ffffff"
-    onClick={(e) => {
-      e.stopPropagation();
-      if (!pin.link) return;
-
-      setTargetLocation(pin.position as [number, number, number]);
-      setPendingLink(pin.link);
-      setStartArc(true);
-      animateDagger(index);
-    }}
-    onPointerEnter={() => (document.body.style.cursor = 'pointer')}
-    onPointerLeave={() => (document.body.style.cursor = 'default')}
-  >
-    {pin.label}
-  </Text>
-))}
+      <Text
+        position={pin.position as [number, number, number]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        font="/fonts/Felipa-Regular.ttf"
+        fontSize={0.35}
+        color="#ffffff"
+        outlineWidth={0.015}
+        outlineColor="#ffffff"
+      >
+        {pin.label}
+      </Text>
+</>
+      ))}
 
 
     </>

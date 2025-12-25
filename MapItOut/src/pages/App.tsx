@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import Continent from "../canvasses/Continent";
+import { Continent } from "../canvasses/Continent";
 
 const cameraSettings = {
   fov: 60,
