@@ -1,7 +1,6 @@
 import { Canvas } from "@react-three/fiber";
-import Continent from "../canvasses/Continent";
-import Paper from "../components/Paper/Paper";
-import Dagger from "../components/Dagger/Dagger";
+import { Continent, WoodContinent } from "../canvasses/Continent";
+import * as THREE from "three";
 
 const cameraSettings = {
   fov: 60,
@@ -13,19 +12,21 @@ const cameraSettings = {
 const App = () => {
   return (
     <div className="w-full h-screen">
-      <div>
-        <Paper />
-        <Dagger />
-      </div>
-      <div>
-        <div className="absolute top-0 left-0 bg-red-500 h-20 w-20"></div>
-        <div className="absolute top-0 right-0 bg-red-500 h-20 w-20"></div>
-        <div className="absolute bottom-0 left-0 bg-red-500 h-20 w-20"></div>
-        <div className="absolute bottom-0 right-0 bg-red-500 h-20 w-20"></div>
-      </div>
       <div id="canvas-wrap" className="w-screen h-screen">
-        <Canvas shadows camera={cameraSettings}>
-          <Continent />
+        <Canvas
+          shadows
+          camera={cameraSettings}
+          gl={{
+            toneMapping: THREE.ACESFilmicToneMapping,
+            outputColorSpace: THREE.SRGBColorSpace,
+          }}
+          onCreated={({ gl }) => {
+            gl.toneMappingExposure = 1.4;
+            gl.shadowMap.enabled = true;
+            gl.shadowMap.type = THREE.PCFSoftShadowMap;
+          }}
+        >
+          <WoodContinent />
         </Canvas>
       </div>
     </div>

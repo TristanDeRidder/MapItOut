@@ -1,6 +1,5 @@
 import { Canvas } from "@react-three/fiber";
 import Locations from "../canvasses/Locations";
-import LocationCard from "../components/LocationCard/LocationCard";
 import locationsData from "../data/locations.json";
 import { useParams } from "react-router-dom";
 
@@ -13,8 +12,6 @@ const cameraSettings = {
 
 const POI = () => {
     const { modelId } = useParams<{ modelId: string }>();
-
-    console.log("modelId from params:", modelId);
 
     // Find the location that matches the modelId from the URL params
     const locationData = Object.values(locationsData.locations).find(
@@ -36,7 +33,7 @@ const POI = () => {
 
     return (
         <>
-            <LocationCard
+            {/* <LocationCard
                 name={locationData.name}
                 code={locationData.code}
                 subject={locationData.subject}
@@ -44,7 +41,7 @@ const POI = () => {
                 strategicAssessment={locationData.strategicAssessment}
                 defensiveCapabilities={locationData.defensiveCapabilities}
                 status={locationData.status}
-            />
+            /> */}
 
             <div id="canvas-wrap" className="w-screen h-screen">
                 <Canvas shadows camera={cameraSettings}>

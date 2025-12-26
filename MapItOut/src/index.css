@@ -15,6 +15,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@font-face {
+  font-family: 'Italianno';
+  src: url('/fonts/Italianno-Regular.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Felipa';
+  src: url('/fonts/Felipa-Regular.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Kings';
+  src: url('/fonts/Kings-Regular.ttf') format('truetype');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -30,6 +51,7 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  font-family: 'Felipa', system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 h1 {
