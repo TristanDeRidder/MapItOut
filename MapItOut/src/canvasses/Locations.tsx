@@ -1,4 +1,4 @@
-import { useGLTF, OrbitControls, Sky, Html } from "@react-three/drei";
+import { useGLTF, OrbitControls, Sky } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import crowdUrl from '../assets/sounds/crowd.wav';
 import FireUrl from '../assets/sounds/fire.wav';

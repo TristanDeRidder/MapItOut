@@ -1,6 +1,5 @@
 import { Canvas } from "@react-three/fiber";
 import Locations from "../canvasses/Locations";
-import LocationCard from "../components/LocationCard/LocationCard";
 import locationsData from "../data/locations.json";
 import { useParams } from "react-router-dom";
 

@@ -6,8 +6,7 @@ import * as THREE from "three";
 import gsap from 'gsap';
 import { Water } from "three-stdlib";
 import { extend, useThree, useFrame, useLoader } from '@react-three/fiber';
-import { EffectComposer, Bloom, ToneMapping } from '@react-three/postprocessing';
-import { ToneMappingMode } from "postprocessing";
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
 
 extend({ Water });
 
