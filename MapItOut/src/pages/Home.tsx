@@ -11,14 +11,17 @@ const cameraSettings = {
 const App = () => {
   return (
     <div className="w-full h-screen">
-      <div id="canvas-wrap" className="w-screen h-screen">
+      <div id="canvas-wrap" className="w-screen h-screen relative">
         <Canvas shadows camera={cameraSettings}>
           <Home />
         </Canvas>
       </div>
       <div>
-        <div className="flex justify-center items-center absolute top-0 left-0 bg-white opacity-50 backdrop-blur-3xl h-full w-full">
-          <p className="text-black text-5xl w-fit">Amaralys</p>
+        <div className="flex flex-col justify-center items-center absolute top-0 left-0 bg-white opacity-50 backdrop-blur-3xl h-full w-full">
+          <a href="/amaralys"className="text-black visited:text-black hover:text-black active:text-black focus:text-black text-5xl w-fit">
+            Amaralys
+          </a>
+
         </div>
       </div>
     </div>
