@@ -1,4 +1,4 @@
-import { useGLTF, OrbitControls, Sky } from "@react-three/drei";
+import { useGLTF, OrbitControls, Sky, Html } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import crowdUrl from '../assets/sounds/crowd.wav';
 import FireUrl from '../assets/sounds/fire.wav';
@@ -7,6 +7,7 @@ import Lightning from "../components/Lightning/Lightning";
 import LocationCard from "../components/LocationCard/LocationCard";
 import locationsData from "../data/locations.json";
 import { CameraPinnedCard } from "../components/Camera/CameraPinned";
+import { Physics, RigidBody } from "@react-three/rapier";
 
 type LocationConfig = {
   sound?: {
@@ -23,6 +24,9 @@ type LocationConfig = {
     interval: [number, number];
     flashDuration: number;
   };
+  physics?: {
+    enabled: boolean;
+  };
 };
 
 
@@ -36,6 +40,9 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
     sky: {
       sunPosition: [500, 150, -1000],
       turbidity: 0.1,
+    },
+    physics: {
+      enabled: true,
     },
   },
   RessonBaked2: {
@@ -134,22 +141,43 @@ const Locations = ({ modelId }: { modelId?: string }) => {
       .catch(console.error);
   };
 
-  const locationData = Object.values(locationsData.locations).find(
-        loc => loc.id === modelId
-    );
+  const ragdollRef = useRef<any>(null);
+  const push = () => {
+    const minZ = -0.005;
+    const maxZ = 0.005;
+    const z = Math.random() * (maxZ - minZ) + minZ;
 
-    if (!locationData) {
-        return (
-                <div className="h-screen w-screen flex justify-center items-center">
-                    <div className="text-center">
-                        <h1 className="">Model Not Found</h1>
-                        <a href="/" className="">
-                            ← Back to Map
-                        </a>
-                    </div>
-                </div>
-        );
-    }
+    ragdollRef.current.applyImpulse({ x: 0, y: 0, z }, true);
+  }
+
+  const [pushCount, setPushCount] = useState(0);
+  const [showPushText, setShowPushText] = useState(false);
+
+  const handlePush = () => {
+    push();
+    setPushCount((c) => {
+      const next = c + 1;
+      if (next >= 5) setShowPushText(true);
+      return next;
+    });
+  };
+
+  const locationData = Object.values(locationsData.locations).find(
+    (loc) => loc.id === modelId
+  );
+
+  if (!locationData) {
+    return (
+      <div className="h-screen w-screen flex justify-center items-center">
+        <div className="text-center">
+          <h1 className="">Model Not Found</h1>
+          <a href="/" className="">
+            ← Back to Map
+          </a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -167,7 +195,7 @@ const Locations = ({ modelId }: { modelId?: string }) => {
         intensity={2.5}
         shadow-bias={-0.0005}
       />
- 
+
       <ambientLight intensity={1} />
 
       {/* Optional Sky */}
@@ -183,20 +211,56 @@ const Locations = ({ modelId }: { modelId?: string }) => {
       {/* Lightning */}
       {config?.lightning && <Lightning config={config.lightning} />}
 
+      {/* Easter egg text (requires: import { Html } from "@react-three/drei";) */}
+      {showPushText && (
+        <Html position={[-4.58, 0.25, -2.5]} center>
+          <div
+            style={{
+              padding: "8px 12px",
+              background: "rgba(0,0,0,0.7)",
+              color: "white",
+              borderRadius: 8,
+              fontSize: 14,
+              whiteSpace: "nowrap",
+            }}
+          >
+            He is already dead!!
+          </div>
+        </Html>
+      )}
 
+      {/* Physics */}
+      {config?.physics?.enabled ? (
+        <Physics>
+          <RigidBody ref={ragdollRef} friction={1}>
+            <mesh
+              position={[-4.58, 0, -2.5]}
+              rotation={[-Math.PI / 2, 0, 0]}
+              onClick={handlePush}
+            >
+              <boxGeometry args={[0.05, 0.05, 0.2]} />
+              <meshStandardMaterial color="red" />
+            </mesh>
+          </RigidBody>
 
-      {/* Model */}
-      <primitive
-        object={POIModel.scene}
-        scale={0.02}
-        position={[-3, -1, 0]}
-      />
+          <RigidBody type="fixed" restitution={0}>
+            <mesh position={[0, -1.4, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+              <planeGeometry args={[100, 100]} />
+            </mesh>
+          </RigidBody>
 
-      
+          {/* Model */}
+          <RigidBody type="fixed" colliders="trimesh">
+            <primitive object={POIModel.scene} scale={0.02} position={[-3, -1, 0]} />
+          </RigidBody>
+        </Physics>
+      ) : (
+        <primitive object={POIModel.scene} scale={0.02} position={[-3, -1, 0]} />
+      )}
+
       <CameraPinnedCard>
         <LocationCard {...locationData} />
       </CameraPinnedCard>
-
     </>
   );
 };
