@@ -76,10 +76,6 @@ const Locations = ({ modelId }: { modelId?: string }) => {
     new URL(`../models/${modelName}.glb`, import.meta.url).href
   );
 
-  const DaggerModel = useGLTF(
-    new URL("../models/DaggerOrigin.glb", import.meta.url).href
-  );
-
   useEffect(() => {
     POIModel.scene.traverse((obj) => {
       if ((obj as any).isMesh) {
@@ -96,23 +92,6 @@ const Locations = ({ modelId }: { modelId?: string }) => {
       }
     });
   }, [POIModel]);
-
-  useEffect(() => {
-    DaggerModel.scene.traverse((obj) => {
-      if ((obj as any).isMesh) {
-        obj.castShadow = true;
-        obj.receiveShadow = false;
-
-        const mat = (obj as any).material;
-        if (mat?.isMeshStandardMaterial) {
-          mat.envMapIntensity = 4;
-          mat.roughness = 0.25;
-          mat.metalness = 1;
-          mat.needsUpdate = true;
-        }
-      }
-    });
-  }, [DaggerModel]);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [audioUnlocked, setAudioUnlocked] = useState(false);
@@ -151,13 +130,11 @@ const Locations = ({ modelId }: { modelId?: string }) => {
   }
 
   const [pushCount, setPushCount] = useState(0);
-  const [showPushText, setShowPushText] = useState(false);
 
   const handlePush = () => {
     push();
     setPushCount((c) => {
       const next = c + 1;
-      if (next >= 5) setShowPushText(true);
       return next;
     });
   };
@@ -211,24 +188,6 @@ const Locations = ({ modelId }: { modelId?: string }) => {
       {/* Lightning */}
       {config?.lightning && <Lightning config={config.lightning} />}
 
-      {/* Easter egg text (requires: import { Html } from "@react-three/drei";) */}
-      {showPushText && (
-        <Html position={[-4.58, 0.25, -2.5]} center>
-          <div
-            style={{
-              padding: "8px 12px",
-              background: "rgba(0,0,0,0.7)",
-              color: "white",
-              borderRadius: 8,
-              fontSize: 14,
-              whiteSpace: "nowrap",
-            }}
-          >
-            He is already dead!!
-          </div>
-        </Html>
-      )}
-
       {/* Physics */}
       {config?.physics?.enabled ? (
         <Physics>
@@ -248,6 +207,22 @@ const Locations = ({ modelId }: { modelId?: string }) => {
               <planeGeometry args={[100, 100]} />
             </mesh>
           </RigidBody>
+          {pushCount >= 5 && (
+            <Html position={[-4.58, 0.25, -2.5]} center>
+              <div
+                style={{
+                  padding: "8px 12px",
+                  background: "rgba(0,0,0,0.7)",
+                  color: "white",
+                  borderRadius: 8,
+                  fontSize: 14,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                He is already dead!!
+              </div>
+            </Html>
+        )}
 
           {/* Model */}
           <RigidBody type="fixed" colliders="trimesh">

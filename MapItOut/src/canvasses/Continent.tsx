@@ -251,6 +251,9 @@ export const WoodContinent = () => {
       <ambientLight intensity={0.2} />
       <Environment preset="city" />
       {/* <Ocean /> */}
+      <group scale={1000}>
+        <Sky sunPosition={[500, 150, -1000]} turbidity={0.1} />
+      </group>
 
       {/* Shadow Plane */}
       <mesh
