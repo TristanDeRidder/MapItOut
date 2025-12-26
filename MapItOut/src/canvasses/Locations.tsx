@@ -1,9 +1,12 @@
-import { useGLTF, OrbitControls, Sky } from "@react-three/drei";
+import { useGLTF, OrbitControls, Sky, Html } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
 import crowdUrl from '../assets/sounds/crowd.wav';
 import FireUrl from '../assets/sounds/fire.wav';
 import LightningUrl from '../assets/sounds/lightning.wav';
 import Lightning from "../components/Lightning/Lightning";
+import LocationCard from "../components/LocationCard/LocationCard";
+import locationsData from "../data/locations.json";
+import { CameraPinnedCard } from "../components/Camera/CameraPinned";
 
 type LocationConfig = {
   sound?: {
@@ -66,6 +69,44 @@ const Locations = ({ modelId }: { modelId?: string }) => {
     new URL(`../models/${modelName}.glb`, import.meta.url).href
   );
 
+  const DaggerModel = useGLTF(
+    new URL("../models/DaggerOrigin.glb", import.meta.url).href
+  );
+
+  useEffect(() => {
+    POIModel.scene.traverse((obj) => {
+      if ((obj as any).isMesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = true;
+      }
+
+      const mat = (obj as any).material;
+      if (mat && mat.isMeshStandardMaterial) {
+        mat.metalness = 0;
+        mat.roughness = 1;
+        mat.envMapIntensity = 1;
+        mat.needsUpdate = true;
+      }
+    });
+  }, [POIModel]);
+
+  useEffect(() => {
+    DaggerModel.scene.traverse((obj) => {
+      if ((obj as any).isMesh) {
+        obj.castShadow = true;
+        obj.receiveShadow = false;
+
+        const mat = (obj as any).material;
+        if (mat?.isMeshStandardMaterial) {
+          mat.envMapIntensity = 4;
+          mat.roughness = 0.25;
+          mat.metalness = 1;
+          mat.needsUpdate = true;
+        }
+      }
+    });
+  }, [DaggerModel]);
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [audioUnlocked, setAudioUnlocked] = useState(false);
 
@@ -93,6 +134,23 @@ const Locations = ({ modelId }: { modelId?: string }) => {
       .catch(console.error);
   };
 
+  const locationData = Object.values(locationsData.locations).find(
+        loc => loc.id === modelId
+    );
+
+    if (!locationData) {
+        return (
+                <div className="h-screen w-screen flex justify-center items-center">
+                    <div className="text-center">
+                        <h1 className="">Model Not Found</h1>
+                        <a href="/" className="">
+                            ← Back to Map
+                        </a>
+                    </div>
+                </div>
+        );
+    }
+
   return (
     <>
       {/* Controls */}
@@ -103,7 +161,13 @@ const Locations = ({ modelId }: { modelId?: string }) => {
       />
 
       {/* Lights */}
-      <directionalLight position={[1, 2, 3]} intensity={4.5} />
+      <directionalLight
+        castShadow
+        position={[10, 15, 10]}
+        intensity={2.5}
+        shadow-bias={-0.0005}
+      />
+ 
       <ambientLight intensity={1} />
 
       {/* Optional Sky */}
@@ -120,12 +184,19 @@ const Locations = ({ modelId }: { modelId?: string }) => {
       {config?.lightning && <Lightning config={config.lightning} />}
 
 
+
       {/* Model */}
       <primitive
         object={POIModel.scene}
         scale={0.02}
-        position={[0, -1, 0]}
+        position={[-3, -1, 0]}
       />
+
+      
+      <CameraPinnedCard>
+        <LocationCard {...locationData} />
+      </CameraPinnedCard>
+
     </>
   );
 };

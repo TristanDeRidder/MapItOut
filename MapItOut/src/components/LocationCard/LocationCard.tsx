@@ -1,4 +1,3 @@
-
 interface LocationCardProps {
     name: string;
     code: string;
@@ -19,7 +18,7 @@ const LocationCard = ({
     status
 }: LocationCardProps) => {
     return (
-        <div className="bg-yellow-50 bg-cover bg-center bg-no-repeat w-96 h-11/12 px-6 flex flex-col justify-center items-center absolute top-4 right-5 transform -translate-x-1/2 z-10 pointer-events-none [mask-image:url('../../../public/Paper.png')] [mask-size:cover] [mask-position:center] [mask-repeat:no-repeat]">
+        <div className="bg-yellow-50 bg-cover bg-center bg-no-repeat w-96 h-screen px-6 flex flex-col justify-center items-center relative z-10 pointer-events-none [mask-image:url('../../../public/Paper.png')] [mask-size:cover] [mask-position:center] [mask-repeat:no-repeat]">
             {/* HEADER: Centered with decorative lines */}
             <div className="flex justify-center items-center gap-4 border-b-2 border-stone-800/20 px-6 pb-6 mb-6">
                 <span className="border-t-2 border-stone-800 h-1 w-12 opacity-60 bg-stone-950"></span>

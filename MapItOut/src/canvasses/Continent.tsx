@@ -1,12 +1,13 @@
-import { useGLTF, OrbitControls, Clone, Sky, Text, Environment, ContactShadows } from "@react-three/drei";
+import { useGLTF, OrbitControls, Clone, Sky, Text, Environment } from "@react-three/drei";
 import pinsData from "../data/pins.json";
 import CameraArcAnimation from "../components/Camera/ArcCamera";
-import { useState, useRef, useMemo, useEffect, use, useLayoutEffect } from "react";
+import { useState, useRef, useMemo, useEffect } from "react";
 import * as THREE from "three";
 import gsap from 'gsap';
 import { Water } from "three-stdlib";
 import { extend, useThree, useFrame, useLoader } from '@react-three/fiber';
-import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { EffectComposer, Bloom, ToneMapping } from '@react-three/postprocessing';
+import { ToneMappingMode } from "postprocessing";
 
 extend({ Water });
 
@@ -163,17 +164,7 @@ export const WoodContinent = () => {
     });
   };
 
-  DaggerModel.scene.traverse((obj) => {
-    if ((obj as any).isMesh) {
-      const mat = (obj as any).material;
-      if (mat && mat.isMeshStandardMaterial) {
-        mat.envMapIntensity = 5;
-        mat.needsUpdate = true;
-      }
-    }
-  });
-
-  useLayoutEffect(() => {
+  useEffect(() => {
     DaggerModel.scene.traverse((obj) => {
       if ((obj as any).isMesh) {
         obj.castShadow = true;
@@ -191,7 +182,7 @@ export const WoodContinent = () => {
   }, [DaggerModel]);
 
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     ContinentModel.scene.traverse((obj) => {
       if ((obj as any).isMesh) {
         obj.castShadow = false;
@@ -209,7 +200,7 @@ export const WoodContinent = () => {
   }, [ContinentModel]);
 
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     TableModel.scene.traverse((obj) => {
       if ((obj as any).isMesh) {
         obj.castShadow = true;
@@ -228,14 +219,6 @@ export const WoodContinent = () => {
           luminanceSmoothing={0.6}
         />
       </EffectComposer>
-
-      {/* <ContactShadows
-        position={[0, -1.02, 0]}
-        opacity={0.4}
-        scale={30}
-        blur={3}
-        far={10}
-      /> */}
 
       {/* Controls */}
       <OrbitControls makeDefault enableZoom={true} enableRotate={true} />
@@ -269,18 +252,18 @@ export const WoodContinent = () => {
       <ambientLight intensity={0.2} />
       <Environment preset="city" />
       {/* <Ocean /> */}
+
+      {/* Shadow Plane */}
       <mesh
         rotation-x={-Math.PI / 2}
-        position={[0, -0.97, 0]} // slightly BELOW the continent
+        position={[0, -0.97, 0]}
         receiveShadow
       >
         <planeGeometry args={[60, 60]} />
         <shadowMaterial opacity={0.35} />
       </mesh>
 
-      <group scale={1000}>
-        <Sky sunPosition={[500, 150, -10]} turbidity={0.1} />
-      </group>
+
 
       {/* Models */}
       <primitive

@@ -34,7 +34,7 @@ const POI = () => {
 
     return (
         <>
-            <LocationCard
+            {/* <LocationCard
                 name={locationData.name}
                 code={locationData.code}
                 subject={locationData.subject}
@@ -42,7 +42,7 @@ const POI = () => {
                 strategicAssessment={locationData.strategicAssessment}
                 defensiveCapabilities={locationData.defensiveCapabilities}
                 status={locationData.status}
-            />
+            /> */}
 
             <div id="canvas-wrap" className="w-screen h-screen">
                 <Canvas shadows camera={cameraSettings}>
