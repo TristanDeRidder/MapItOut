@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { Continent, WoodContinent } from "../canvasses/Continent";
+import { ContinentWithDagger } from "../canvasses/Continent";
 import * as THREE from "three";
 
 const cameraSettings = {
@@ -26,7 +26,7 @@ const App = () => {
             gl.shadowMap.type = THREE.PCFSoftShadowMap;
           }}
         >
-          <WoodContinent />
+          <ContinentWithDagger />
         </Canvas>
       </div>
     </div>

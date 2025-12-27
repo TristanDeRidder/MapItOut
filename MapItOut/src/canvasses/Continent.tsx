@@ -134,10 +134,12 @@ export const Continent = () => {
   );
 };
 
-export const WoodContinent = () => {
+export const ContinentWithDagger = () => {
   const [startArc, setStartArc] = useState(false);
   const [pendingLink, setPendingLink] = useState<string | null>(null);
-  const [targetLocation, setTargetLocation] = useState<[number, number, number]>([0, 0, 0]);
+  const [targetLocation, setTargetLocation] = useState<
+    [number, number, number]
+  >([0, 0, 0]);
   const daggerRefs = useRef<{ [key: number]: THREE.Group }>({});
 
   const ContinentModel = useGLTF(
@@ -151,7 +153,7 @@ export const WoodContinent = () => {
   );
 
   const animateDagger = async (index: number) => {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     const daggerGroup = daggerRefs.current[index];
     if (!daggerGroup) return;
 
@@ -180,7 +182,6 @@ export const WoodContinent = () => {
     });
   }, [DaggerModel]);
 
-
   useEffect(() => {
     ContinentModel.scene.traverse((obj) => {
       if ((obj as any).isMesh) {
@@ -198,7 +199,6 @@ export const WoodContinent = () => {
     });
   }, [ContinentModel]);
 
-
   useEffect(() => {
     TableModel.scene.traverse((obj) => {
       if ((obj as any).isMesh) {
@@ -207,7 +207,7 @@ export const WoodContinent = () => {
       }
     });
   }, [TableModel]);
-  
+
   return (
     <>
       {/* Post-Processing Effects */}
@@ -256,16 +256,10 @@ export const WoodContinent = () => {
       </group>
 
       {/* Shadow Plane */}
-      <mesh
-        rotation-x={-Math.PI / 2}
-        position={[0, -0.97, 0]}
-        receiveShadow
-      >
+      <mesh rotation-x={-Math.PI / 2} position={[0, -0.97, 0]} receiveShadow>
         <planeGeometry args={[60, 60]} />
         <shadowMaterial opacity={0.35} />
       </mesh>
-
-
 
       {/* Models */}
       <primitive
