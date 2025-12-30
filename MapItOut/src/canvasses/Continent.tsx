@@ -140,6 +140,7 @@ export const ContinentWithDagger = () => {
   const [targetLocation, setTargetLocation] = useState<
     [number, number, number]
   >([0, 0, 0]);
+  const [daggerSceneVersion, setDaggerSceneVersion] = useState(0);
   const daggerRefs = useRef<{ [key: number]: THREE.Group }>({});
 
   const ContinentModel = useGLTF(
@@ -180,6 +181,10 @@ export const ContinentWithDagger = () => {
         }
       }
     });
+    // `Clone` snapshots Object3D flags at creation time.
+    // This forces all dagger clones to remount once the GLTF scene has been prepared,
+    // so shadows are correct on initial load (instead of only after the first click).
+    setDaggerSceneVersion((v) => v + 1);
   }, [DaggerModel]);
 
   useEffect(() => {
@@ -307,7 +312,7 @@ export const ContinentWithDagger = () => {
               document.body.style.cursor = "default";
             }}
           >
-            <Clone object={DaggerModel.scene} scale={0.3} />
+            <Clone key={daggerSceneVersion} object={DaggerModel.scene} scale={0.3} />
           </group>
         );
       })}
