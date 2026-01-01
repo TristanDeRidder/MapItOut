@@ -31,7 +31,7 @@ type LocationConfig = {
 
 
 const LOCATION_CONFIG: Record<string, LocationConfig> = {
-  BasgiathBaked2: {
+  Basgiath: {
     sound: {
       url: crowdUrl,
       volume: 0.5,
@@ -45,14 +45,14 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
       enabled: true,
     },
   },
-  RessonBaked2: {
+  Resson: {
     sound: {
       url: FireUrl,
       volume: 0.2,
       loop: true,
     },
   },
-   DraithusBaked2: {
+   Draithus: {
     sound: {
       url: LightningUrl,
       volume: 0.3,
