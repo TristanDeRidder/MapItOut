@@ -5,6 +5,9 @@ import {
   Sky,
   Text,
   Environment,
+  Sky as SkyImpl,
+  Clouds,
+  Cloud,
 } from "@react-three/drei";
 import pinsData from "../data/pins.json";
 import CameraArcAnimation from "../components/Camera/ArcCamera";
@@ -62,6 +65,54 @@ function Ocean() {
     />
   );
 }
+
+const SkyConfig = () => {
+  return (
+    <>
+      <SkyImpl />
+      <group>
+        <Clouds material={THREE.MeshLambertMaterial} limit={400} range={100}>
+          <Cloud
+            seed={4}
+            segments={20}
+            volume={6}
+            opacity={0.8}
+            fade={10}
+            growth={4}
+            speed={0.1}
+            bounds={[6, 1, 1]}
+            color="#fff"
+            position={[-4, 15, -5]}
+          />
+          <Cloud
+            seed={3}
+            segments={20}
+            volume={6}
+            opacity={0.8}
+            fade={10}
+            growth={5}
+            speed={0.1}
+            bounds={[6, 1, 1]}
+            color="#fff"
+            position={[6, 15, 5]}
+          />
+          <Cloud
+            seed={3}
+            segments={20}
+            volume={6}
+            opacity={0.8}
+            fade={10}
+            growth={4}
+            speed={0.1}
+            bounds={[6, 1, 1]}
+            color="#fff"
+            position={[0, 15, 12]}
+          />
+        </Clouds>
+      </group>
+    </>
+  );
+};
 
 export const Continent = () => {
   const [startArc, setStartArc] = useState(false);
@@ -161,6 +212,8 @@ export const ContinentWithDagger = () => {
   const [daggerSceneVersion, setDaggerSceneVersion] = useState(0);
   const daggerRefs = useRef<{ [key: number]: THREE.Group }>({});
 
+  const { camera, controls } = useThree();
+
   const navigate = useNavigate();
   const { startRouteLoading } = useRouteLoader();
 
@@ -173,6 +226,32 @@ export const ContinentWithDagger = () => {
   const DaggerModel = useGLTF(
     new URL("../models/DaggerOrigin.glb", import.meta.url).href
   );
+
+  useEffect(() => {
+    if (!controls) return;
+    const typedControls = controls as any;
+    typedControls.enabled = false;
+
+    const tween = gsap.to(camera.position, {
+      x: 0,
+      y: 6,
+      z: 15,
+      duration: 1.75,
+      ease: "power2.inOut",
+      onUpdate: () => {
+        camera.lookAt(0, 0, 0);
+        typedControls.update?.();
+      },
+      onComplete: () => {
+        typedControls.enabled = true;
+        typedControls.update?.();
+      },
+    });
+
+    return () => {
+      tween.kill();
+    };
+  }, [camera, controls]);
 
   const animateDagger = async (index: number) => {
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -202,9 +281,6 @@ export const ContinentWithDagger = () => {
         }
       }
     });
-    // `Clone` snapshots Object3D flags at creation time.
-    // This forces all dagger clones to remount once the GLTF scene has been prepared,
-    // so shadows are correct on initial load (instead of only after the first click).
     setDaggerSceneVersion((v) => v + 1);
   }, [DaggerModel]);
 
@@ -277,7 +353,7 @@ export const ContinentWithDagger = () => {
 
       <ambientLight intensity={0.2} />
       <Environment preset="city" />
-      {/* <Ocean /> */}
+      <SkyConfig />
       <group scale={1000}>
         <Sky sunPosition={[500, 150, -1000]} turbidity={0.1} />
       </group>
