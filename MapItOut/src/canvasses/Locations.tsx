@@ -69,7 +69,7 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
 const Locations = ({ modelId }: { modelId?: string }) => {
   if (!modelId) return null;
 
-  const modelName = `${modelId}Baked2`;
+  const modelName = `${modelId}`;
   const config = LOCATION_CONFIG[modelName];
 
   const POIModel = useGLTF(
