@@ -3,7 +3,6 @@ import {
   OrbitControls,
   Clone,
   Sky,
-  Text,
   Environment,
   Sky as SkyImpl,
   Clouds,
@@ -11,11 +10,11 @@ import {
 } from "@react-three/drei";
 import pinsData from "../data/pins.json";
 import CameraArcAnimation from "../components/Camera/ArcCamera";
-import { useState, useRef, useMemo, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import * as THREE from "three";
 import gsap from "gsap";
 import { Water } from "three-stdlib";
-import { extend, useThree, useFrame, useLoader } from "@react-three/fiber";
+import { extend, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { useNavigate } from "react-router-dom";
 import { useRouteLoader } from "../components/Loader/RouteLoader";
@@ -30,41 +29,51 @@ declare global {
   }
 }
 
-function Ocean() {
+const WaterPlane = () => {
   const ref = useRef<any>(null);
-  const gl = useThree((state) => state.gl);
-  const waterNormals = useLoader(THREE.TextureLoader, "/waternormals.jpeg");
+  const { gl } = useThree();
 
-  waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
-  const geom = useMemo(() => new THREE.PlaneGeometry(10000, 10000), []);
-  const config = useMemo(
-    () => ({
-      textureWidth: 512,
-      textureHeight: 512,
-      waterNormals,
-      sunDirection: new THREE.Vector3(),
-      sunColor: 0xffffff,
-      waterColor: 0x001e0f,
-      distortionScale: 3.7,
-      fog: false,
-      format: gl.outputColorSpace,
-    }),
-    [waterNormals, gl.outputColorSpace]
+  const waterNormals = new THREE.TextureLoader().load(
+    "https://threejs.org/examples/textures/waternormals.jpg",
+    (texture) => {
+      texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+    }
   );
+
+  useEffect(() => {
+    if (!ref.current) return;
+
+    ref.current.material.uniforms.size.value = 10;
+  }, []);
+
   useFrame((_, delta) => {
     if (ref.current) {
-      ref.current.material.uniforms.time.value += delta * 0.1;
+      ref.current.material.uniforms.time.value += delta * 0.15;
     }
   });
+
   return (
     <water
       ref={ref}
-      args={[geom, config]}
+      args={[
+        new THREE.PlaneGeometry(1000, 1000),
+        {
+          textureWidth: 1024,
+          textureHeight: 1024,
+          waterNormals,
+          sunDirection: new THREE.Vector3(),
+          sunColor: 0xffffff,
+          waterColor: 0x001e0f,
+          distortionScale: 3.7,
+          fog: false,
+          format: gl.outputColorSpace,
+        },
+      ]}
       rotation-x={-Math.PI / 2}
-      position={[0, -2, 0]}
+      position={[0, -0.96, 0]}
     />
   );
-}
+};
 
 const SkyConfig = () => {
   return (
@@ -110,95 +119,6 @@ const SkyConfig = () => {
           />
         </Clouds>
       </group>
-    </>
-  );
-};
-
-export const Continent = () => {
-  const [startArc, setStartArc] = useState(false);
-  const [pendingLink, setPendingLink] = useState<string | null>(null);
-  const [targetLocation, setTargetLocation] = useState<
-    [number, number, number]
-  >([0, 0, 0]);
-
-  const navigate = useNavigate();
-  const { startRouteLoading } = useRouteLoader();
-
-  const ContinentModel = useGLTF(
-    new URL("../models/AmaralysBaked2.glb", import.meta.url).href
-  );
-
-  return (
-    <>
-      {/* Post-Processing Effects */}
-      <EffectComposer>
-        <Bloom
-          intensity={0.5}
-          luminanceThreshold={1.1}
-          luminanceSmoothing={0.6}
-        />
-      </EffectComposer>
-      {/* Controls */}
-      <OrbitControls makeDefault enableZoom={false} enableRotate={true} />
-
-      <CameraArcAnimation
-        endPos={targetLocation}
-        arcHeight={8}
-        play={startArc}
-        onComplete={() => {
-          setStartArc(false);
-          if (pendingLink) {
-            startRouteLoading();
-            navigate(pendingLink);
-          }
-        }}
-      />
-
-      {/* World */}
-      <directionalLight position={[-3, 2, 1]} intensity={1.8} castShadow />
-      <ambientLight intensity={2} />
-      <Ocean />
-      <group scale={1000}>
-        <Sky sunPosition={[500, 150, -1000]} turbidity={0.1} />
-      </group>
-
-      {/* Models */}
-      <primitive
-        object={ContinentModel.scene}
-        scale={0.02}
-        position={[0, -1, 0]}
-      />
-
-      {pinsData.pins.map((pin, index) => (
-        <>
-          <Text
-            key={index}
-            position={pin.position as [number, number, number]}
-            rotation={[-Math.PI / 2, 0, 0]}
-            font="/fonts/Felipa-Regular.ttf"
-            fontSize={0.35}
-            color="rgba(255, 255, 255, 1)"
-            anchorX="center"
-            anchorY="middle"
-            outlineWidth={0.05}
-            outlineColor="rgba(255, 238, 0, 1) 0, 1)"
-            outlineOpacity={0.35}
-            material-toneMapped={false}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (!pin.link) return;
-
-              setTargetLocation(pin.position as [number, number, number]);
-              setPendingLink(pin.link);
-              setStartArc(true);
-            }}
-            onPointerEnter={() => (document.body.style.cursor = "pointer")}
-            onPointerLeave={() => (document.body.style.cursor = "default")}
-          >
-            {pin.label}
-          </Text>
-        </>
-      ))}
     </>
   );
 };
@@ -363,6 +283,9 @@ export const ContinentWithDagger = () => {
         <planeGeometry args={[60, 60]} />
         <shadowMaterial opacity={0.35} />
       </mesh>
+
+      {/* Water */}
+      <WaterPlane />
 
       {/* Models */}
       <primitive
