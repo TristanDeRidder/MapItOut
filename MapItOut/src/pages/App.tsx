@@ -1,6 +1,7 @@
 import { Canvas } from "@react-three/fiber";
 import { ContinentWithDagger } from "../canvasses/Continent";
 import * as THREE from "three";
+import { useRouteLoaderAutoStop } from "../components/Loader/RouteLoader";
 
 const cameraSettings = {
   fov: 60,
@@ -10,6 +11,8 @@ const cameraSettings = {
 };
 
 const App = () => {
+  useRouteLoaderAutoStop();
+
   return (
     <div className="w-full h-screen">
       <div id="canvas-wrap" className="w-screen h-screen">

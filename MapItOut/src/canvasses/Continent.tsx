@@ -1,12 +1,21 @@
-import { useGLTF, OrbitControls, Clone, Sky, Text, Environment } from "@react-three/drei";
+import {
+  useGLTF,
+  OrbitControls,
+  Clone,
+  Sky,
+  Text,
+  Environment,
+} from "@react-three/drei";
 import pinsData from "../data/pins.json";
 import CameraArcAnimation from "../components/Camera/ArcCamera";
 import { useState, useRef, useMemo, useEffect } from "react";
 import * as THREE from "three";
-import gsap from 'gsap';
+import gsap from "gsap";
 import { Water } from "three-stdlib";
-import { extend, useThree, useFrame, useLoader } from '@react-three/fiber';
-import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { extend, useThree, useFrame, useLoader } from "@react-three/fiber";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
+import { useNavigate } from "react-router-dom";
+import { useRouteLoader } from "../components/Loader/RouteLoader";
 
 extend({ Water });
 
@@ -21,10 +30,7 @@ declare global {
 function Ocean() {
   const ref = useRef<any>(null);
   const gl = useThree((state) => state.gl);
-  const waterNormals = useLoader(
-  THREE.TextureLoader,
-  '/waternormals.jpeg'
-)
+  const waterNormals = useLoader(THREE.TextureLoader, "/waternormals.jpeg");
 
   waterNormals.wrapS = waterNormals.wrapT = THREE.RepeatWrapping;
   const geom = useMemo(() => new THREE.PlaneGeometry(10000, 10000), []);
@@ -38,7 +44,7 @@ function Ocean() {
       waterColor: 0x001e0f,
       distortionScale: 3.7,
       fog: false,
-      format: gl.outputColorSpace
+      format: gl.outputColorSpace,
     }),
     [waterNormals, gl.outputColorSpace]
   );
@@ -47,19 +53,30 @@ function Ocean() {
       ref.current.material.uniforms.time.value += delta * 0.1;
     }
   });
-  return <water ref={ref} args={[geom, config]} rotation-x={-Math.PI / 2} position={[0, -2, 0]} />;
+  return (
+    <water
+      ref={ref}
+      args={[geom, config]}
+      rotation-x={-Math.PI / 2}
+      position={[0, -2, 0]}
+    />
+  );
 }
 
 export const Continent = () => {
   const [startArc, setStartArc] = useState(false);
   const [pendingLink, setPendingLink] = useState<string | null>(null);
-  const [targetLocation, setTargetLocation] = useState<[number, number, number]>([0, 0, 0]);
+  const [targetLocation, setTargetLocation] = useState<
+    [number, number, number]
+  >([0, 0, 0]);
+
+  const navigate = useNavigate();
+  const { startRouteLoading } = useRouteLoader();
 
   const ContinentModel = useGLTF(
     new URL("../models/AmaralysBaked2.glb", import.meta.url).href
   );
 
-  
   return (
     <>
       {/* Post-Processing Effects */}
@@ -80,7 +97,8 @@ export const Continent = () => {
         onComplete={() => {
           setStartArc(false);
           if (pendingLink) {
-            window.location.href = pendingLink;
+            startRouteLoading();
+            navigate(pendingLink);
           }
         }}
       />
@@ -142,6 +160,9 @@ export const ContinentWithDagger = () => {
   >([0, 0, 0]);
   const [daggerSceneVersion, setDaggerSceneVersion] = useState(0);
   const daggerRefs = useRef<{ [key: number]: THREE.Group }>({});
+
+  const navigate = useNavigate();
+  const { startRouteLoading } = useRouteLoader();
 
   const ContinentModel = useGLTF(
     new URL("../models/AmaralysBaked2.glb", import.meta.url).href
@@ -234,7 +255,8 @@ export const ContinentWithDagger = () => {
         onComplete={() => {
           setStartArc(false);
           if (pendingLink) {
-            window.location.href = pendingLink;
+            startRouteLoading();
+            navigate(pendingLink);
           }
         }}
       />
@@ -312,7 +334,11 @@ export const ContinentWithDagger = () => {
               document.body.style.cursor = "default";
             }}
           >
-            <Clone key={daggerSceneVersion} object={DaggerModel.scene} scale={0.3} />
+            <Clone
+              key={daggerSceneVersion}
+              object={DaggerModel.scene}
+              scale={0.3}
+            />
           </group>
         );
       })}
