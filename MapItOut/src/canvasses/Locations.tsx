@@ -1,8 +1,8 @@
 import { useGLTF, OrbitControls, Sky, Html } from "@react-three/drei";
 import { useEffect, useRef, useState } from "react";
-import crowdUrl from '../assets/sounds/crowd.wav';
-import FireUrl from '../assets/sounds/fire.wav';
-import LightningUrl from '../assets/sounds/lightning.wav';
+import crowdUrl from "../assets/sounds/crowd.wav";
+import FireUrl from "../assets/sounds/fire.wav";
+import LightningUrl from "../assets/sounds/lightning.wav";
 import Lightning from "../components/Lightning/Lightning";
 import LocationCard from "../components/LocationCard/LocationCard";
 import locationsData from "../data/locations.json";
@@ -29,7 +29,6 @@ type LocationConfig = {
   };
 };
 
-
 const LOCATION_CONFIG: Record<string, LocationConfig> = {
   Basgiath: {
     sound: {
@@ -52,7 +51,7 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
       loop: true,
     },
   },
-   Draithus: {
+  Draithus: {
     sound: {
       url: LightningUrl,
       volume: 0.3,
@@ -64,7 +63,6 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
     },
   },
 };
-
 
 const Locations = ({ modelId }: { modelId?: string }) => {
   if (!modelId) return null;
@@ -127,7 +125,7 @@ const Locations = ({ modelId }: { modelId?: string }) => {
     const z = Math.random() * (maxZ - minZ) + minZ;
 
     ragdollRef.current.applyImpulse({ x: 0, y: 0, z }, true);
-  }
+  };
 
   const [pushCount, setPushCount] = useState(0);
 
@@ -163,6 +161,9 @@ const Locations = ({ modelId }: { modelId?: string }) => {
         makeDefault
         onStart={handleInteraction}
         onChange={handleInteraction}
+        maxPolarAngle={Math.PI / 2 - 0.05}
+        minDistance={2}
+        maxDistance={20}
       />
 
       {/* Lights */}
@@ -222,15 +223,23 @@ const Locations = ({ modelId }: { modelId?: string }) => {
                 He is already dead!!
               </div>
             </Html>
-        )}
+          )}
 
           {/* Model */}
           <RigidBody type="fixed" colliders="trimesh">
-            <primitive object={POIModel.scene} scale={0.02} position={[-3, -1, 0]} />
+            <primitive
+              object={POIModel.scene}
+              scale={0.02}
+              position={[-3, -1, 0]}
+            />
           </RigidBody>
         </Physics>
       ) : (
-        <primitive object={POIModel.scene} scale={0.02} position={[-3, -1, 0]} />
+        <primitive
+          object={POIModel.scene}
+          scale={0.02}
+          position={[-3, -1, 0]}
+        />
       )}
 
       <CameraPinnedCard>

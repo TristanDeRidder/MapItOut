@@ -242,7 +242,14 @@ export const ContinentWithDagger = () => {
       </EffectComposer>
 
       {/* Controls */}
-      <OrbitControls makeDefault enableZoom={true} enableRotate={true} />
+      <OrbitControls
+        makeDefault
+        enableZoom={true}
+        enableRotate={true}
+        maxPolarAngle={Math.PI / 2 - 0.05}
+        minDistance={8}
+        maxDistance={40}
+      />
 
       <CameraArcAnimation
         endPos={targetLocation}

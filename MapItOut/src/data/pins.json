@@ -3,17 +3,17 @@
     {
       "position": [-1, -1, 4],
       "label": "Resson",
-      "link": "/Amaralys/Resson"
+      "link": "/Resson"
     },
     {
       "position": [-3.5, -1, -1.5],
       "label": "Basgiath",
-      "link": "/Amaralys/Basgiath"
+      "link": "/Basgiath"
     },
     {
       "position": [-0.5, -1, 2.75],
       "label": "Draithus",
-      "link": "/Amaralys/Draithus"
+      "link": "/Draithus"
     }
   ]
 }
