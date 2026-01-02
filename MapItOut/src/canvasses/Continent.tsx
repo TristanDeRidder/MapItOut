@@ -232,7 +232,7 @@ export const ContinentWithDagger = () => {
 
       <ambientLight intensity={0.2} />
       <Environment preset="city" />
-      <SkyConfig />
+      {SkyConfig(false)}
       <group scale={1000}>
         <Sky sunPosition={[500, 150, -1000]} turbidity={0.1} />
       </group>

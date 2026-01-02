@@ -4,8 +4,9 @@ import {
 } from "@react-three/drei";
 import * as THREE from "three";
 
-export const SkyConfig = () => {
-  return (
+export const SkyConfig = (location?: boolean) => {
+  if (location){
+    return (
     <>
       <group>
         <Clouds material={THREE.MeshLambertMaterial} limit={400} range={100}>
@@ -84,5 +85,51 @@ export const SkyConfig = () => {
         </Clouds>
       </group>
     </>
+  )} else {
+    return (
+    <>
+      <group>
+        <Clouds material={THREE.MeshLambertMaterial} limit={400} range={100}>
+          <Cloud
+            seed={4}
+            segments={20}
+            volume={6}
+            opacity={0.8}
+            fade={10}
+            growth={4}
+            speed={0.1}
+            bounds={[6, 1, 1]}
+            color="#fff"
+            position={[-4, 15, -5]}
+          />
+          <Cloud
+            seed={3}
+            segments={20}
+            volume={6}
+            opacity={0.8}
+            fade={10}
+            growth={5}
+            speed={0.1}
+            bounds={[6, 1, 1]}
+            color="#fff"
+            position={[6, 15, 5]}
+          />
+          <Cloud
+            seed={3}
+            segments={20}
+            volume={6}
+            opacity={0.8}
+            fade={10}
+            growth={4}
+            speed={0.1}
+            bounds={[6, 1, 1]}
+            color="#fff"
+            position={[0, 15, 12]}
+          />
+        </Clouds>
+      </group>
+    </>
   );
+  }
+  
 };

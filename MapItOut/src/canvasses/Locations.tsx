@@ -286,7 +286,7 @@ const Locations = ({ modelId }: { modelId?: string }) => {
       {config?.lightning && (
         <>
           <Lightning config={config.lightning} />
-          <SkyConfig />
+          {SkyConfig(true)}
         </>
       )}
 
