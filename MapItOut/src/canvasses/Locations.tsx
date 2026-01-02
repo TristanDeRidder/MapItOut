@@ -1,5 +1,5 @@
-import { useGLTF, OrbitControls, Sky, Html } from "@react-three/drei";
-import { useEffect, useRef, useState } from "react";
+import { useGLTF, OrbitControls, Sky, Html, Environment } from "@react-three/drei";
+import { useEffect, useRef, useState, type ComponentProps } from "react";
 import crowdUrl from "../assets/sounds/crowd.wav";
 import FireUrl from "../assets/sounds/fire.wav";
 import LightningUrl from "../assets/sounds/lightning.wav";
@@ -27,6 +27,14 @@ type LocationConfig = {
   physics?: {
     enabled: boolean;
   };
+  environment?: {
+    preset: ComponentProps<typeof Environment>["preset"];
+  };
+  light?: {
+    intensity: number;
+    position: [number, number, number];
+    shadowBias?: number;
+  };
 };
 
 const LOCATION_CONFIG: Record<string, LocationConfig> = {
@@ -37,20 +45,42 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
       loop: true,
     },
     sky: {
-      sunPosition: [500, 150, -1000],
-      turbidity: 0.1,
+      sunPosition: [300, 200, -300],
+      turbidity: 2,          // clear day
+    },
+    environment: {
+      preset: "city",
     },
     physics: {
       enabled: true,
     },
+    light: {
+      intensity: 2.5,
+      position: [10, 15, 10],
+      shadowBias: -0.0001,
+    },
   },
+
   Resson: {
     sound: {
       url: FireUrl,
       volume: 0.2,
       loop: true,
     },
+    sky: {
+      sunPosition: [0, -10, 0],
+      turbidity: 15,
+    },
+    environment: {
+      preset: "night",
+    },
+    light: {
+      intensity: 0.1,
+      position: [10, 15, 10],
+      shadowBias: -0.0001,
+    },
   },
+
   Draithus: {
     sound: {
       url: LightningUrl,
@@ -61,8 +91,21 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
       interval: [3, 8],
       flashDuration: 0.15,
     },
+    sky: {
+      sunPosition: [0, -20, 0],
+      turbidity: 15,
+    },
+    environment: {
+      preset: "night",
+    },
+    light: {
+      intensity: 1.5,
+      position: [10, 15, 10],
+      shadowBias: -0.0001,
+    },
   },
 };
+
 
 const Locations = ({ modelId }: { modelId?: string }) => {
   if (!modelId) return null;
@@ -166,15 +209,18 @@ const Locations = ({ modelId }: { modelId?: string }) => {
         maxDistance={20}
       />
 
-      {/* Lights */}
-      <directionalLight
-        castShadow
-        position={[10, 15, 10]}
-        intensity={2.5}
-        shadow-bias={-0.0005}
-      />
-
       <ambientLight intensity={1} />
+
+      {/* Lights */}
+      {config?.light ? (
+        <directionalLight
+          intensity={config.light.intensity}
+          position={config.light.position}
+          shadow-bias={config.light.intensity }
+        />
+      ) : (
+        <directionalLight intensity={2} position={[10, 15, 10]} shadow-bias={-0.0001} />
+      )}
 
       {/* Optional Sky */}
       {config?.sky && (
@@ -185,6 +231,9 @@ const Locations = ({ modelId }: { modelId?: string }) => {
           />
         </group>
       )}
+
+      {/* Environment */}
+      {config?.environment && <Environment preset={config.environment.preset} />}
 
       {/* Lightning */}
       {config?.lightning && <Lightning config={config.lightning} />}
