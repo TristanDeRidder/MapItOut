@@ -1,3 +1,4 @@
+import { useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
@@ -27,6 +28,10 @@ const Lightning = ({ config }: { config: NonNullable<LocationConfig['lightning']
   );
   const [flashing, setFlashing] = useState(false);
 
+  const Lightning = useGLTF(
+    new URL('../../models/Lightning.glb', import.meta.url).href
+  );
+
   useFrame((_, delta) => {
     timer.current += delta;
 
@@ -44,12 +49,20 @@ const Lightning = ({ config }: { config: NonNullable<LocationConfig['lightning']
   });
 
   return (
-    <directionalLight
-      ref={lightRef}
-      position={[5, 10, 2]}
-      color="#bcdcff"
-      intensity={0}
-    />
+    <>
+      <directionalLight
+        ref={lightRef}
+        position={[5, 10, 2]}
+        color="#bcdcff"
+        intensity={0}
+      />
+      <primitive 
+       object={Lightning.scene}
+       scale={0.02}
+       position={[-3, -1, 0]}
+       visible={flashing}
+      />
+    </>
   );
 };
 

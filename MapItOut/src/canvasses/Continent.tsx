@@ -4,9 +4,6 @@ import {
   Clone,
   Sky,
   Environment,
-  Sky as SkyImpl,
-  Clouds,
-  Cloud,
 } from "@react-three/drei";
 import pinsData from "../data/pins.json";
 import CameraArcAnimation from "../components/Camera/ArcCamera";
@@ -18,6 +15,7 @@ import { extend, useFrame, useThree } from "@react-three/fiber";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import { useNavigate } from "react-router-dom";
 import { useRouteLoader } from "../components/Loader/RouteLoader";
+import { SkyConfig } from "../components/Sky/Sky";
 
 extend({ Water });
 
@@ -75,53 +73,7 @@ const WaterPlane = () => {
   );
 };
 
-const SkyConfig = () => {
-  return (
-    <>
-      <SkyImpl />
-      <group>
-        <Clouds material={THREE.MeshLambertMaterial} limit={400} range={100}>
-          <Cloud
-            seed={4}
-            segments={20}
-            volume={6}
-            opacity={0.8}
-            fade={10}
-            growth={4}
-            speed={0.1}
-            bounds={[6, 1, 1]}
-            color="#fff"
-            position={[-4, 15, -5]}
-          />
-          <Cloud
-            seed={3}
-            segments={20}
-            volume={6}
-            opacity={0.8}
-            fade={10}
-            growth={5}
-            speed={0.1}
-            bounds={[6, 1, 1]}
-            color="#fff"
-            position={[6, 15, 5]}
-          />
-          <Cloud
-            seed={3}
-            segments={20}
-            volume={6}
-            opacity={0.8}
-            fade={10}
-            growth={4}
-            speed={0.1}
-            bounds={[6, 1, 1]}
-            color="#fff"
-            position={[0, 15, 12]}
-          />
-        </Clouds>
-      </group>
-    </>
-  );
-};
+
 
 export const ContinentWithDagger = () => {
   const [startArc, setStartArc] = useState(false);

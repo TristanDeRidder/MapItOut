@@ -10,6 +10,7 @@ import { CameraPinnedCard } from "../components/Camera/CameraPinned";
 import { Physics, RigidBody } from "@react-three/rapier";
 import { useThree } from "@react-three/fiber";
 import gsap from "gsap";
+import { SkyConfig } from "../components/Sky/Sky";
 
 type LocationConfig = {
   sound?: {
@@ -75,6 +76,11 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
       volume: 0.2,
       loop: true,
     },
+    lightning: {
+      intensity: 80,
+      interval: [0, 0],
+      flashDuration: 0,
+    },
     sky: {
       sunPosition: [0, -10, 0],
       turbidity: 15,
@@ -133,7 +139,6 @@ const Locations = ({ modelId }: { modelId?: string }) => {
 
   const { camera, controls } = useThree();
   
-
   useEffect(() => {
     if (!controls) return;
     const typedControls = controls as any;
@@ -278,7 +283,12 @@ const Locations = ({ modelId }: { modelId?: string }) => {
       {config?.environment && <Environment preset={config.environment.preset} />}
 
       {/* Lightning */}
-      {config?.lightning && <Lightning config={config.lightning} />}
+      {config?.lightning && (
+        <>
+          <Lightning config={config.lightning} />
+          <SkyConfig />
+        </>
+      )}
 
       {/* Physics */}
       {config?.physics?.enabled ? (
