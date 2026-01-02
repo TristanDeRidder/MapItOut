@@ -115,7 +115,7 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
       shadowBias: -0.0001,
     },
     camera: {
-      position: [3, 0, 3],
+      position: [-6, 0, 3],
     },
   },
 };
