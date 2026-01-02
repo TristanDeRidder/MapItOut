@@ -8,6 +8,8 @@ import LocationCard from "../components/LocationCard/LocationCard";
 import locationsData from "../data/locations.json";
 import { CameraPinnedCard } from "../components/Camera/CameraPinned";
 import { Physics, RigidBody } from "@react-three/rapier";
+import { useThree } from "@react-three/fiber";
+import gsap from "gsap";
 
 type LocationConfig = {
   sound?: {
@@ -35,6 +37,9 @@ type LocationConfig = {
     position: [number, number, number];
     shadowBias?: number;
   };
+  camera?: {
+    position: [number, number, number];
+  };
 };
 
 const LOCATION_CONFIG: Record<string, LocationConfig> = {
@@ -46,7 +51,7 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
     },
     sky: {
       sunPosition: [300, 200, -300],
-      turbidity: 2,          // clear day
+      turbidity: 2,
     },
     environment: {
       preset: "city",
@@ -58,6 +63,9 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
       intensity: 2.5,
       position: [10, 15, 10],
       shadowBias: -0.0001,
+    },
+    camera: {
+      position: [-12, 0, -3],
     },
   },
 
@@ -78,6 +86,9 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
       intensity: 0.1,
       position: [10, 15, 10],
       shadowBias: -0.0001,
+    },
+   camera: {
+      position: [-10, 2, 5],
     },
   },
 
@@ -103,6 +114,9 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
       position: [10, 15, 10],
       shadowBias: -0.0001,
     },
+    camera: {
+      position: [3, 0, 3],
+    },
   },
 };
 
@@ -116,6 +130,34 @@ const Locations = ({ modelId }: { modelId?: string }) => {
   const POIModel = useGLTF(
     new URL(`../models/${modelName}.glb`, import.meta.url).href
   );
+
+  const { camera, controls } = useThree();
+  
+
+  useEffect(() => {
+    if (!controls) return;
+    const typedControls = controls as any;
+    typedControls.enabled = false;
+
+    const tween = gsap.to(camera.position, {
+      x: config?.camera?.position[0] ?? 0,
+      y: config?.camera?.position[1] ?? 6,
+      z: config?.camera?.position[2] ?? 12,
+      duration: 1.75,
+      ease: "power2.inOut",
+      onUpdate: () => {
+        camera.lookAt(0, 0, 0);
+        typedControls.update?.();
+      },
+      onComplete: () => {
+        typedControls.enabled = true;
+        typedControls.update?.();
+      },
+    });
+    return () => {
+      tween.kill();
+    };
+  }, [camera, controls]);
 
   useEffect(() => {
     POIModel.scene.traverse((obj) => {
