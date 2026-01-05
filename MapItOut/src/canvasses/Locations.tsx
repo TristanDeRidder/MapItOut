@@ -82,11 +82,6 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
       volume: 0.2,
       loop: true,
     },
-    lightning: {
-      intensity: 0,
-      interval: [0, 0],
-      flashDuration: 0,
-    },
     sky: {
       sunPosition: [0, -10, 0],
       turbidity: 15,
@@ -282,12 +277,15 @@ const Locations = ({ modelId }: { modelId?: string }) => {
 
       {/* Optional Sky */}
       {config?.sky && (
+        <>
         <group scale={1000}>
           <Sky
             sunPosition={config.sky.sunPosition}
             turbidity={config.sky.turbidity ?? 10}
           />
         </group>
+        {SkyConfig(true)}
+        </>
       )}
 
       {/* Environment */}
