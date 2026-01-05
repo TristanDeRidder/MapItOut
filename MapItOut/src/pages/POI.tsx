@@ -36,16 +36,6 @@ const POI = () => {
 
   return (
     <>
-      {/* <LocationCard
-                name={locationData.name}
-                code={locationData.code}
-                subject={locationData.subject}
-                locationDescription={locationData.locationDescription}
-                strategicAssessment={locationData.strategicAssessment}
-                defensiveCapabilities={locationData.defensiveCapabilities}
-                status={locationData.status}
-            /> */}
-
       <div id="canvas-wrap" className="w-screen h-screen">
         <Canvas shadows camera={cameraSettings}>
           <Locations modelId={locationData.name} />

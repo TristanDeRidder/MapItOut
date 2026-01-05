@@ -1,5 +1,5 @@
 import { Canvas } from "@react-three/fiber";
-import { ContinentWithDagger, TableContinent } from "../canvasses/Continent";
+import { TableContinent } from "../canvasses/Continent";
 import * as THREE from "three";
 import { useRouteLoaderAutoStop } from "../components/Loader/RouteLoader";
 
@@ -29,7 +29,6 @@ const App = () => {
             gl.shadowMap.type = THREE.PCFSoftShadowMap;
           }}
         >
-          {/* <ContinentWithDagger /> */}
           <TableContinent />
         </Canvas>
       </div>

@@ -47,7 +47,7 @@ export function useRouteLoader() {
 }
 
 function FullscreenLoader({ visible }: { visible: boolean }) {
-  const { progress, item } = useProgress();
+  const { progress } = useProgress();
 
   if (!visible) return null;
 
