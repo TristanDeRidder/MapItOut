@@ -1,4 +1,10 @@
-import { useGLTF, OrbitControls, Sky, Html, Environment } from "@react-three/drei";
+import {
+  useGLTF,
+  OrbitControls,
+  Sky,
+  Html,
+  Environment,
+} from "@react-three/drei";
 import { useEffect, useRef, useState, type ComponentProps } from "react";
 import crowdUrl from "../assets/sounds/crowd.wav";
 import FireUrl from "../assets/sounds/fire.wav";
@@ -77,7 +83,7 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
       loop: true,
     },
     lightning: {
-      intensity: 80,
+      intensity: 0,
       interval: [0, 0],
       flashDuration: 0,
     },
@@ -91,9 +97,9 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
     light: {
       intensity: 0.1,
       position: [10, 15, 10],
-      shadowBias: -0.0001,
+      shadowBias: -0.0005,
     },
-   camera: {
+    camera: {
       position: [-10, 2, 5],
     },
   },
@@ -126,7 +132,6 @@ const LOCATION_CONFIG: Record<string, LocationConfig> = {
   },
 };
 
-
 const Locations = ({ modelId }: { modelId?: string }) => {
   if (!modelId) return null;
 
@@ -138,7 +143,7 @@ const Locations = ({ modelId }: { modelId?: string }) => {
   );
 
   const { camera, controls } = useThree();
-  
+
   useEffect(() => {
     if (!controls) return;
     const typedControls = controls as any;
@@ -261,12 +266,18 @@ const Locations = ({ modelId }: { modelId?: string }) => {
       {/* Lights */}
       {config?.light ? (
         <directionalLight
+          castShadow
           intensity={config.light.intensity}
           position={config.light.position}
-          shadow-bias={config.light.intensity }
+          shadow-bias={config.light.shadowBias ?? -0.0001}
         />
       ) : (
-        <directionalLight intensity={2} position={[10, 15, 10]} shadow-bias={-0.0001} />
+        <directionalLight
+          castShadow
+          intensity={2}
+          position={[10, 15, 10]}
+          shadow-bias={-0.0001}
+        />
       )}
 
       {/* Optional Sky */}
@@ -280,7 +291,9 @@ const Locations = ({ modelId }: { modelId?: string }) => {
       )}
 
       {/* Environment */}
-      {config?.environment && <Environment preset={config.environment.preset} />}
+      {config?.environment && (
+        <Environment preset={config.environment.preset} />
+      )}
 
       {/* Lightning */}
       {config?.lightning && (
