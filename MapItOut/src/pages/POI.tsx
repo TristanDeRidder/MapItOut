@@ -40,6 +40,11 @@ const POI = () => {
         <Canvas shadows camera={cameraSettings}>
           <Locations modelId={locationData.name} />
         </Canvas>
+        <div className="absolute top-4 left-4 bg-yellow-50 bg-opacity-75 p-2 rounded">
+          <a href="/" className="!text-black">
+            ← Back to Map
+          </a>
+        </div>
       </div>
     </>
   );
