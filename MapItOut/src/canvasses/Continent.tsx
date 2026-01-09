@@ -511,7 +511,7 @@ export const TableContinent = () => {
       <primitive
         object={ContinentModel.scene}
         scale={0.02}
-        position={[0, -0.95, 0]}
+        position={[0, -1.1, 0]}
       />
       <primitive object={TableModel.scene} scale={0.01} position={[0, -1, 0]} />
 
